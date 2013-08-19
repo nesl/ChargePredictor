@@ -1,0 +1,5 @@
+bin/
+gen/
+project.properties
+local.properties
+default.properties

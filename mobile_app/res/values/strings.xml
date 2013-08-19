@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tree Diagram</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="tag">ACTIVE:</string>
+    <string name="status">RUNNING</string>
+    <string name="title_activity_main1">MainActivity</string>
+    <string name="toggle">Stop SystemSens</string>
+    <string name="feature">Option</string>
+    <string name="marquee">Description</string>
+    <string name="enabled_text">Tree Diagram Enabled</string>
+    <string name="enabled_marq">Click to stop feature recording process.</string>
+    <string name="disabled_text">Tree Diagram Disabled</string>
+    <string name="disabled_marq">Click to start feature recording process.</string>
+
+</resources>
