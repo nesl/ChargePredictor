@@ -1,0 +1,390 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>FusionCharts v3 Documentation</title>
+<link rel="stylesheet" href="../css/Style.css" type="text/css"/>
+<script type="text/javascript" src="../assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="../assets/prettify/prettify.css" />
+<script type="text/javascript" src="../../Charts/FusionCharts.js" ></script>
+<script type="text/javascript" src="../assets/ui/js/lib.js" ></script>
+</head>
+<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+   <tr>
+      <td class="pageHeader">JavaScript Charting capabilities </td>
+   </tr>
+   <tr><td height="10"></td></tr>
+   <tr>
+      <td valign="top" class="text">
+         <p>Starting FusionCharts v3.2, you can now render the charts on devices like iPhone/iPad using the in-built JavaScript rendering capabilities, powered by <a href="http://www.highcharts.com" target="_blank">Highcharts</a> library. The charts rendered by this module are purely JavaScript based and do not need Flash Player at all. FusionCharts license agreement includes a license for HighCharts, and as such you do not need to license it separately. </p>
+         <p>FusionCharts gives you the option of either using automatic fallback, wherein the charts figure out the best mode of rendering (either Flash or JavaScript, based on availability of Flash Player), or lets you configure whether to render charts exclusively using JavaScript. If you are already using FusionCharts and wish to add iPad/iPhone fallback, you just need to replace the old SWF and JS files with the new ones - without changing a single line of code. </p>
+         <p>In case you wish to render JavaScript based charts only, irrespective of whether Flash Player is installed or not, all you  need to do is add a single line of code to your existing implementation. This has been covered in forthcoming sections. Meanwhile, let's take a small overview of FusionCharts JavaScript based charting capabilities. </p>
+   <td>   </tr>
+   <tr>
+      <td valign="top" class="header"><a name="how"></a>How it works?</td>
+   </tr>
+   <tr>
+      <td valign="top" class="text">
+         <p>FusionCharts v3.2 features a completely new FusionCharts JavaScript class. FusionCharts JavaScript class now consists of three main files: <span class="codeInline">FusionCharts.js</span>, <span class="codeInline">highcharts.js</span> and<span class="codeInline"> jquery.min.js</span>. These three files are  present in <span class="codeInline">Download Pack &gt; Charts</span> folder. Although you only need to include <span class="codeInline">FusionCharts.js</span> in your web page,  <span class="codeInline">highcharts.js</span> and <span class="codeInline">jquery.min.js </span>must be present in the  folder that contains <span class="codeInline">FusionCharts.js</span>.</p>
+         <p> <span class="codeInline">FusionCharts.js</span> dynamically loads the other JavaScript on-demand (i.e., if and when needed). Once FusionCharts class determines that the device is iPad/iPhone, it automatically switches the rendering mode to JavaScript. You can also <a href="../FirstChart/UsingPureJS.html#force">forcefully set the rendering method </a>to JavaScript from your code.&nbsp; Additionally, you can setup the charts to render as&nbsp;<a href="../JavaScript/API/Methods.html#autofallback">JavaScript charts whenever Flash Player is not installed for the browser</a>. You just need to call <span class="codeInline">FusionCharts_fallbackJSChartWhenNoFlash()</span> before you render a chart. </p>
+     </td>
+   </tr>
+   
+   <tr>
+      <td >
+         <table width="800" border="0" cellspacing="0" cellpadding="0" height="388" style="padding:0;margin:0;">
+            <tr>
+               <td width="500" style="background-image:url(../FirstChart/Images/iPad.jpg);background-repeat:no-repeat; background-position:bottom; height:388px; padding:0 0 40px 0;" height="388" align="center" valign="bottom" id="ipadChartLive">&nbsp;</td>
+               <td width="300" style="background-image:url(../FirstChart/Images/iphone.jpg); background-repeat:no-repeat; background-position:bottom; height:388px;padding:0 0 44px 0;" height="388" align="center" valign="bottom" id="iphoneChartLive">&nbsp;</td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+   <tr><td height="15"></td></tr>
+   <tr>
+      <td valign="top" class="header"><a name="JSsupported_charts" id="JSsupported_charts"></a>Chart types supported </td>
+   </tr>
+   <tr>
+      <td valign="top" class="text">
+         <p>Given below is the list of chart types supported by the FusionCharts JavaScript renderer:</p>
+         <table width="80%" border="0" align="left" cellpadding="0" cellspacing="0" class="table">
+            <tr>
+               <td valign="top" class="header" >Chart Type</td>
+               <td width="35%" valign="top" class="header">Flash SWF Name</td>
+               <td width="35%" valign="top" class="header">Equivalent JavaScript  Chart </td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text"><strong>Single Series Charts</strong></td>
+            </tr>
+            <tr class="">
+               <td  valign="top" class="text" style="padding-left:20px;">Column 3D </td>
+               <td  valign="top" class="codeInline">Column3D.swf</td>
+               <td valign="top" class="text">Column 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Column 2D </td>
+               <td  valign="top" class="codeInline">Column2D.swf</td>
+               <td valign="top" class="text">Column 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Line 2D </td>
+               <td  valign="top" class="codeInline">Line.swf</td>
+               <td valign="top" class="text">Line</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Area 2D </td>
+               <td  valign="top" class="codeInline">Area2D.swf</td>
+               <td valign="top" class="text">Area 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Bar 2D </td>
+               <td  valign="top" class="codeInline">Bar2D.swf</td>
+               <td valign="top" class="text">Bar 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Pie 2D </td>
+               <td  valign="top" class="codeInline">Pie2D.swf</td>
+               <td valign="top" class="text">Pie 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Pie 3D </td>
+               <td  valign="top" class="codeInline">Pie3D.swf</td>
+               <td valign="top" class="text">Pie 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Doughnut 2D </td>
+               <td  valign="top" class="codeInline">Doughnut2D.swf</td>
+               <td valign="top" class="text">Doughnut 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Doughnut 3D </td>
+               <td  valign="top" class="codeInline">Doughnut3D.swf</td>
+               <td valign="top" class="text">Doughnut 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Pareto 2D </td>
+               <td  valign="top" class="codeInline">Pareto2D.swf</td>
+               <td valign="top" class="text">Pareto 2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Pareto 3D </td>
+               <td  valign="top" class="codeInline">Pareto3D.swf</td>
+               <td valign="top" class="text">Pareto 2D</td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text">&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text"><strong>Multi-series Charts </strong></td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Column 2D </td>
+               <td  valign="top" class="codeInline">MSColumn2D.swf</td>
+               <td valign="top" class="text">MSColumn2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Column 3D</td>
+               <td  valign="top" class="codeInline">MSColumn3D.swf</td>
+               <td valign="top" class="text">MSColumn2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Line 2D</td>
+               <td  valign="top" class="codeInline">MSLine.swf</td>
+               <td valign="top" class="text">MSLine</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Bar 2D</td>
+               <td  valign="top" class="codeInline">MSBar2D.swf</td>
+               <td valign="top" class="text">MSBar2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Bar 3D </td>
+               <td valign="top" class="codeInline">MSBar3D.swf</td>
+               <td valign="top" class="text">MSBar2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Area 2D</td>
+               <td  valign="top" class="codeInline">MSArea.swf</td>
+               <td valign="top" class="text">MSArea</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Marimekko</td>
+               <td  valign="top" class="codeInline">Marimekko.swf</td>
+               <td valign="top" class="text">Marimekko</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Zoom Line</td>
+               <td  valign="top" class="codeInline">ZoomLine.swf</td>
+               <td valign="top" class="text">ZoomLine</td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text">&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text"><strong>Stacked Charts </strong></td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Column 3D </td>
+               <td  valign="top" class="codeInline">StackedColumn3D.swf</td>
+               <td valign="top" class="text">StackedColumn2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Column 2D</td>
+               <td  valign="top" class="codeInline">StackedColumn2D.swf</td>
+               <td valign="top" class="text">StackedColumn2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Bar 2D</td>
+               <td  valign="top" class="codeInline">StackedBar2D.swf</td>
+               <td valign="top" class="text">StackedBar2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Bar 3D </td>
+               <td valign="top" class="codeInline">StackedBar3D.swf</td>
+               <td valign="top" class="text">StackedBar2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Area 2D </td>
+               <td  valign="top" class="codeInline">StackedArea2D.swf</td>
+               <td valign="top" class="text">StackedArea2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Stacked Column 2D </td>
+               <td  valign="top" class="codeInline">MSStackedColumn2D.swf</td>
+               <td valign="top" class="text"><span class="text-light">not supported as of now </span></td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text">&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text"><strong>Combination Charts </strong></td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">True 3D Chart (Multi-series 3D Single Y Combination chart - Column + Line + Area) </td>
+               <td valign="top" class="codeInline">MSCombi3D.swf</td>
+               <td valign="top">MSCombi2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series 2D Single Y Combination Chart (Column + Line + Area) </td>
+               <td  valign="top" class="codeInline">MSCombi2D.swf</td>
+               <td valign="top">MSCombi2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Column 3D + Multi-series Line - Single Y Axis </td>
+               <td  valign="top" class="codeInline">MSColumnLine3D.swf</td>
+               <td valign="top">MSCombi2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Column2D + Line single Y Axis </td>
+               <td  valign="top" class="codeInline">StackedColumn2DLine.swf</td>
+               <td valign="top">StackedColumn2DLine</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Column3D + Line single Y Axis </td>
+               <td  valign="top" class="codeInline">StackedColumn3DLine.swf</td>
+               <td valign="top">StackedColumn2DLine</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series 2D Dual Y Combination Chart (Column + Line + Area) </td>
+               <td  valign="top" class="codeInline">MSCombiDY2D.swf</td>
+               <td valign="top">MSCombiDY2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Column 3D + Multi-series Line - Dual Y Axis </td>
+               <td  valign="top" class="codeInline">MSColumn3DLineDY.swf</td>
+               <td valign="top">MSCombiDY2D</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Stacked Column 3D + Line Dual Y Axis </td>
+               <td valign="top" class="codeInline">StackedColumn3DLineDY.swf</td>
+               <td valign="top">StackedColumn2DLineDualY</td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Multi-series Stacked Column 2D + Line Dual Y Axis </td>
+               <td valign="top" class="codeInline">MSStackedColumn2DLineDY.swf</td>
+               <td valign="top" class="text"><span class="text-light">not supported as of now </span></td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text">&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="3" valign="top" class="text"><strong>XY Plot Charts </strong></td>
+            </tr>
+            <tr>
+               <td valign="top" class="text" style="padding-left:20px;">Scatter Chart </td>
+               <td  valign="top" class="codeInline">Scatter.swf</td>
+               <td valign="top">Scatter</td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Bubble Chart </td>
+               <td  class="codeInline">Bubble.swf</td>
+               <td>Bubble</td>
+            </tr>
+            <tr>
+               <td colspan="3" class="text">&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="3" class="text"><strong>Scroll Charts  </strong></td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Scroll Column 2D </td>
+               <td class="codeInline">ScrollColumn2D.swf</td>
+               <td>ScrollColumn2D</td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Scroll Line 2D </td>
+               <td class="codeInline">ScrollLine2D.swf</td>
+               <td>ScrollLine2D</td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Scroll Area 2D </td>
+               <td class="codeInline">ScrollArea2D.swf</td>
+               <td>ScrollArea2D</td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Scroll Stacked Column 2D </td>
+               <td class="codeInline">ScrollStackedColumn2D.swf</td>
+               <td>StackedArea2D (non scroll) </td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Scroll Combination 2D (Single Y) </td>
+               <td class="codeInline">ScrollCombi2D.swf</td>
+               <td>MSCombi2D (non scroll)</td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Scroll Combination 2D (Dual Y) </td>
+               <td class="codeInline">ScrollCombiDY2D.swf</td>
+               <td>MSCombiDY2D (non scroll)</td>
+            </tr>
+            <tr>
+               <td colspan="3" class="text">&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="3" class="text"><strong>Others</strong></td>
+            </tr>
+            <tr>
+               <td class="text" style="padding-left:20px;">Single Series Grid Component </td>
+               <td class="codeInline">SSGrid.swf</td>
+               <td class="text"><span class="text-light">not supported as of now </span></td>
+            </tr>
+        </table>
+      </td>
+   </tr>
+   <tr><td height="20"></td></tr>
+   <tr>
+      <td valign="top" class="header"><a name="limitations"></a>Limitations</td>
+   </tr>
+   <tr>
+      <td valign="top" class="text">
+         <p>As of now, the FusionCharts JavaScript renderer  has the following limitations:</p>
+         <ul>
+            <li>The charts do not support 3D rendering. All 3D charts are automatically converted to 2D when using JavaScript renderer. </li>
+            <li>Some Flash Charts do not have JavaScript equivalent including Multi-series Stacked Column charts, Grid and scroll combination charts </li>
+            <li>Support for exporting	of JavaScript charts as image/PDF is limited to server-side export only</li>
+            <li>Gradient rendering in JavaScript charts is limited  </li>
+            <li>Color palettes (1-5) are not supported</li>
+            <li><span class="codeInline">plotbgcolor</span> suppresses vLine (only if the plot has transparent color vLines are visible) </li>
+            <li>TrendLines	are same as vLine<br>
+            </li>
+         </ul>
+      </td>
+   </tr>
+   <tr>
+      <td valign="top" class="text">&nbsp;</td>
+   </tr>
+</table>
+<script  type="text/javascript">
+
+
+	  var dataXML1 = "<chart caption='Monthly Sales Summary' xAxisName='Month' canvasBgAlpha='0' canvasBorderAlpha='0' plotSpacePercent='50' rotateLabels='1' slantLabels='1' showShadow='1' yAxisMaxValue='200' numDivLines='3' plotborderColor='FFFFFF' plotGradientColor='' yAxisName='Sales' showValues='0'>\n\
+                                <set label='Jan' value='122' />\n\
+                                <set label='Feb' value='101' />\n\
+                                <set label='Mar' value='135' />\n\
+                                <set label='Apr' value='122' />\n\
+                                <set label='May' value='152' />\n\
+                                <set label='Jun' value='182' />\n\
+                                <set label='Jul' value='116' />\n\
+                                <set label='Aug' value='100' />\n\
+                                <set label='Sep' value='98' />\n\
+                                <set label='Oct' value='135' />\n\
+                                <set label='Nov' value='102' />\n\
+                                <set label='Dec' value='112' />\n\
+                                <trendLines>\n\
+                                <line startValue='0.1' displayValue=' ' color='BBBBBB' />\n\
+                                <line startValue='200' displayValue=' ' color='BBBBBB' />\n\
+                                </trendLines>\n\
+                            </chart>";
+
+            var dataXML2 = "<chart canvasBgAlpha='0' canvasBorderAlpha='0' plotSpacePercent='50' showLabels='0' showValues='0' yAxisMaxValue='200' numDivLines='3' showYAXisValues='0' chartLeftMargin='0'\n\
+				 chartRightMargin='0' chartTopMargin='0' chartBottomMargin='0'>\n\
+                                <set label='Jan' value='122' />\n\
+                                <set label='Feb' value='101' />\n\
+                                <set label='Mar' value='135' />\n\
+                                <set label='Apr' value='122' />\n\
+                                <set label='May' value='152' />\n\
+                                <set label='Jun' value='182' />\n\
+                                <set label='Jul' value='116' />\n\
+                                <set label='Aug' value='100' />\n\
+                                <set label='Sep' value='98' />\n\
+                                <set label='Oct' value='135' />\n\
+                                <set label='Nov' value='102' />\n\
+                                <set label='Dec' value='112' />\n\
+                                <trendLines>\n\
+                                <line startValue='0.1' displayValue=' ' color='BBBBBB' />\n\
+                                <line startValue='200' displayValue=' ' color='BBBBBB' />\n\
+                                </trendLines>\n\
+                            </chart>";
+	FusionCharts.setCurrentRenderer('javascript');									 
+	var salesChart = new FusionCharts('../../Charts/Column2D.swf', 'chart-1', '420', '280', '0', '1');
+	salesChart.setXMLData(dataXML1);
+	salesChart.render('ipadChartLive');
+
+	var salesLine = new FusionCharts('../../Charts/Line.swf', 'chart-2', '175', '70', '0', '1');
+	salesLine.setXMLData(dataXML2);
+	salesLine.render('iphoneChartLive');
+
+
+
+</script>
+</body>
+</html>

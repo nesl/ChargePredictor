@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="iso-8859-1"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>FusionCharts v3 Documentation</title>
+<link rel="stylesheet" href="css/Style.css" type="text/css" />
+<script type="text/javascript" src="assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="assets/prettify/prettify.css" />
+<script type="text/javascript" src="assets/ui/js/jquery-1.4.2.min.js" ></script>
+<script type="text/javascript" src="assets/ui/js/lib.js" ></script>
+</head>
+
+<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+  <tr> 
+    <td class="pageHeader">Setting backgrounds for charts </td>
+  </tr>
+  <tr> 
+    <td valign="top" class="text"><p>FusionCharts allows you to easily set a background image/movie for your   chart. You can use this option to embed background images (GIF, JPEG or PNG), other SWF Files, or data tables (in image format) as your chart background. </p>
+      <p>To embed an image, all you need to do is set <span class="codeInline">bgSWF</span> property of <span class="codeInline">&lt;chart&gt;</span> element. You can also dynamically change the transparency of the loaded image using <span class="codeInline">bgSWFAlpha</span> property, which accepts any value between 0 and 100 (<span class="codeInline">bgSWFAlpha</span> property has a default value of 100).</p>
+      <p>Let us now see how we may use the <span class="codeInline">bgSWF</span> property in a chart, as shown below: </p></td>
+  </tr>
+  <tr>
+    <td valign="top">
+    <div class="container">
+    <ul class="tabs">
+       <li><a href="#tab1">XML</a></li>
+       <li><a href="#tab2">JSON</a></li>
+    </ul>
+    <div class="tab_container" style="width:100%; height:450px; overflow:auto;">
+       <div id="tab1" class="tab_content"><pre class="prettyprint code_container">&lt;chart caption='Sales Figures' labelDisplay='NONE' <strong>bgSWF='ChartBg.jpg'</strong> canvasBgAlpha='30' canvasBorderColor='333333' canvasBorderThickness='0' divLineColor='333333'&gt;
+    &lt;set label='John' value='420' /&gt;
+    &lt;set label='Mary' value='295' /&gt;
+    &lt;set label='Tom' value='523' /&gt; 
+    &lt;styles&gt;
+      &lt;definition&gt;
+         &lt;style name='myFont' type='font' isHTML='1' bold='1' size='11' color='FFFFFF' /&gt;
+         &lt;style name='myShadow' type='shadow' color='333333' angle='45' strength='3'/&gt;
+      &lt;/definition&gt;
+      &lt;application&gt;
+         &lt;apply toObject='YAxisValues' styles='myFont,myShadow' /&gt;
+         &lt;apply toObject='DataLabels' styles='myFont,myShadow' /&gt;
+         &lt;apply toObject='DataValues' styles='myFont,myShadow' /&gt;
+         &lt;apply toObject='Caption' styles='myFont,myShadow' /&gt;
+      &lt;/application&gt;
+    &lt;/styles&gt;
+&lt;/chart&gt;</pre></div>
+<div id="tab2" class="tab_content">
+  <pre id="pre-datajson" class="prettyprint code_container">{<br />&nbsp; &quot;chart&quot;:{<br />&nbsp; &nbsp; &quot;caption&quot;:&quot;Sales Figures&quot;,<br />&nbsp; &nbsp; &quot;labeldisplay&quot;:&quot;NONE&quot;,<br />&nbsp; &nbsp; <strong>&quot;bgswf&quot;:&quot;ChartBg.jpg&quot;</strong>,<br />&nbsp; &nbsp; &quot;canvasbgalpha&quot;:&quot;30&quot;,<br />&nbsp; &nbsp; &quot;canvasbordercolor&quot;:&quot;333333&quot;,<br />&nbsp; &nbsp; &quot;canvasborderthickness&quot;:&quot;0&quot;,<br />&nbsp; &nbsp; &quot;divlinecolor&quot;:&quot;333333&quot;<br />&nbsp; },<br />&nbsp; &quot;data&quot;:[{<br />&nbsp; &nbsp; &nbsp; &quot;label&quot;:&quot;John&quot;,<br />&nbsp; &nbsp; &nbsp; &quot;value&quot;:&quot;420&quot;<br />&nbsp; &nbsp; },<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &quot;label&quot;:&quot;Mary&quot;,<br />&nbsp; &nbsp; &nbsp; &quot;value&quot;:&quot;295&quot;<br />&nbsp; &nbsp; },<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &quot;label&quot;:&quot;Tom&quot;,<br />&nbsp; &nbsp; &nbsp; &quot;value&quot;:&quot;523&quot;<br />&nbsp; &nbsp; }<br />&nbsp; ],<br />&nbsp; &quot;styles&quot;:[{<br />&nbsp; &nbsp; &nbsp; &quot;definition&quot;:[{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;style&quot;:[{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;name&quot;:&quot;myFont&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;type&quot;:&quot;font&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;ishtml&quot;:&quot;1&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;bold&quot;:&quot;1&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;size&quot;:&quot;11&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;color&quot;:&quot;FFFFFF&quot;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; },<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;name&quot;:&quot;myShadow&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;type&quot;:&quot;shadow&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;color&quot;:&quot;333333&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;angle&quot;:&quot;45&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;strength&quot;:&quot;3&quot;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ]<br />&nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; ],<br />&nbsp; &nbsp; &nbsp; &quot;application&quot;:[{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;apply&quot;:[{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;toobject&quot;:&quot;YAxisValues&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;styles&quot;:&quot;myFont,myShadow&quot;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; },<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;toobject&quot;:&quot;DataLabels&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;styles&quot;:&quot;myFont,myShadow&quot;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; },<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;toobject&quot;:&quot;DataValues&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;styles&quot;:&quot;myFont,myShadow&quot;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; },<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;toobject&quot;:&quot;Caption&quot;,<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;styles&quot;:&quot;myFont,myShadow&quot;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ]<br />&nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; ]<br />&nbsp; &nbsp; }<br />&nbsp; ]<br />}</pre>
+</div></div></div></td>
+  </tr>
+  <tr>
+    <td valign="top" class="text"><p>In the above code, we're:</p>
+      <ul>
+        <li>Loading a background image <span class="codeInline">ChartBg.jpg</span> by setting it as <span class="codeInline">bgSWF</span> attribute. If your image file is in a different location, you'll need to specify the relative path. Note that due to security restrictions, your image file has to reside on the same sub-domain as chart SWF File and a relative path to the same has to be specified. </li>
+        <li>Setting canvas alpha as 30, so that it becomes see-through for the background to appear.</li>
+        <li>Defining styles for formatting of other chart elements.  </li>
+      </ul>
+    <p>When you view this chart (with the background image), you'll get something as under: </p></td>
+  </tr>
+  <tr>
+    <td valign="top" class="text"><img src="Images/bgSWF.jpg" width="490" height="361" /></td>
+  </tr>
+  <tr>
+    <td valign="top" class="text"><p>Simple and effective - isn't it? </p>
+    <p>For best results, you need to make sure that the background image and your chart have the same dimensions (width and height). Else, the loaded image would align at top left of the chart, as FusionCharts does not stretch the image to maintain proportions. </p></td>
+  </tr>
+</table>
+</body>
+</html>

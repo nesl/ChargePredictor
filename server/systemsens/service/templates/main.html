@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if isQuerySet %}
+
+<table border="0" width="100%">
+<tbody>
+   <tr>
+       <td width = "50%">
+           <font size="4">Found {{count}} records: </font>
+               <font color="#0000ff">
+                     <a href="#interactions">Interactions</a> |
+                     <a href="#battery">Battery</a> |
+                     <a href="appresource/">Resources</a> |
+                     <a href="#network">Network</a>  |
+                     <a href="#cpu">CPU & Memory</a> 
+                     </font></b>
+              </td>
+              <!--
+       <td>
+           We want your feedback:
+           <form
+               action="http://128.97.93.158/service/viz/comment/{{user_query.startdate}}/{{user_query.enddate}}/" 
+              method="post">
+              <table border="0">
+              <tr><td>
+              <textarea rows="5" cols="50" wrap="physical"
+                  name="comment"></textarea>
+              </td></tr>
+              <tr><td align="right">
+              <input type="submit" value="Submit">
+              </td></tr>
+          </table>
+          </form>
+          
+
+       </td>
+       -->
+   </tr>
+</tbody>
+</table>
+
+
+
+
+<br>
+<br>
+
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+       <td>
+           <font size="4"><strong><a name="interactions">Interactions</a></strong></font>
+          <a
+              href="http://128.97.93.158/service/viz/interaction">
+              details
+          </a>
+       </td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img
+src="http://128.97.93.158/service/viz/screen_events/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+       <td>
+           <font size="4"><strong><a
+                      name="battery">Battery</a></strong></font>
+          <a href="http://128.97.93.158/service/viz/battery">
+              details
+          </a>
+       </td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/battery_level/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+
+<img 
+src="http://128.97.93.158/service/viz/power/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+
+</p>
+
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+       <td>
+           <font size="4"><strong><a name="network">Network</a></strong></font>
+          <a href="http://128.97.93.158/service/viz/network">
+              details
+          </a>
+
+       </td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/net_bytes/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+<img 
+src="http://128.97.93.158/service/viz/wifi_scan/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+
+</p>
+
+
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a name="cpu">CPU & Memory</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/cpu_usage/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+<img 
+src="http://128.97.93.158/service/viz/mem_usage/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+
+<img 
+src="http://128.97.93.158/service/viz/audio/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+
+
+<img 
+src="http://128.97.93.158/service/viz/gps/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+
+</p>
+
+
+{% endif %}
+
+
+{% endblock %}
+

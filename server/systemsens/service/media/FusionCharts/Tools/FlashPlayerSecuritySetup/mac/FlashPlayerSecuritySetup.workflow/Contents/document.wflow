@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMApplicationBuild</key>
+	<string>87</string>
+	<key>AMApplicationVersion</key>
+	<string>1.0.4</string>
+	<key>AMDocumentVersion</key>
+	<string>1</string>
+	<key>Owning Application</key>
+	<string>/System/Library/CoreServices/Finder.app</string>
+	<key>actions</key>
+	<array>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.0</string>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run AppleScript.action</string>
+				<key>ActionIconName</key>
+				<string>AppleScript</string>
+				<key>ActionName</key>
+				<string>Run AppleScript</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>source</key>
+					<string>on run {input, parameters}
+	-- Find whether Flash Player Global Security folder is existent or not
+	-- Detect Flash Player
+	set FlashPlayerDetected to getFlashPlayerSettingsPath()
+	
+	if (FlashPlayerDetected = "") then
+		display dialog "Flash player Not detected. Please install Flash Player. Aborting setup." buttons {"OK"} giving up after 10
+		return
+	end if
+	
+	-- Create Flash Player Global Security settings folder if not 
+	-- Manage Security folder
+	set FlashPlayerSecuritySettingspath to ManageFlashPlayerSecurityFolder()
+	
+	-- Get current folder in POSIX format
+	set PresentPath to ("/" &amp; (text from word 1 to word -3 of (POSIX path of (path to me))) &amp; "/") as text
+	
+	-- Set Path to Configuration File
+	-- append/write configuration	
+	
+	try
+		set ConfigurationFile to open for access FlashPlayerSecuritySettingspath &amp; "FusionCharts.cfg" with write permission
+		
+		-- Add Current folder to Configuration File
+		
+		write (PresentPath &amp; "
+" as text) to ConfigurationFile starting at eof
+		
+	on error
+		display dialog "Can not write to Configuration file." buttons {"OK"} giving up after 10
+		close access ConfigurationFile
+		
+	end try
+	close access ConfigurationFile
+	
+	display dialog "Configuration successful." buttons {"OK"} giving up after 10
+	
+	return true
+end run
+
+
+on getFlashPlayerSettingsPath()
+	-- 
+	set FlashSettingsParentPath to ((path to home folder as text) &amp; "Library:Preferences:Macromedia:")
+	try
+		set FlashSettingsParentPathAlias to (FlashSettingsParentPath) as alias
+		try
+			set FlashSettingsPathAlias to (FlashSettingsParentPath &amp; "Flash Player:") as alias
+			return FlashSettingsPathAlias as text
+		on error
+			return ""
+		end try
+	on error
+		return ""
+	end try
+	
+end getFlashPlayerSettingsPath
+
+on ManageFlashPlayerSecurityFolder()
+	
+	set FlashSecurityPathList to {"#Security", "FlashPlayerTrust"}
+	
+	set FlashPlayerSettingsPath to getFlashPlayerSettingsPath() as text
+	if (FlashPlayerSettingsPath = "") then
+		return ""
+	end if
+	
+	set TargetPath to FlashPlayerSettingsPath as text
+	
+	repeat with FolderName in FlashSecurityPathList
+		try
+			set TargetPathAlias to (TargetPath &amp; FolderName &amp; ":") as alias
+			set TargetPath to TargetPathAlias as text
+		on error
+			set TargetPath to mkdir(TargetPath, FolderName)
+		end try
+	end repeat
+	
+	return TargetPath
+	
+end ManageFlashPlayerSecurityFolder
+
+on mkdir(ParentFolder, NameOfNewFolder)
+	try
+		set parentFolderAlias to ParentFolder as alias
+		
+	on error
+		return ParentFolder
+	end try
+	
+	tell application "Finder"
+		if not (exists folder NameOfNewFolder of parentFolderAlias) then
+			make new folder at parentFolderAlias with properties {name:NameOfNewFolder}
+		end if
+	end tell
+	return (ParentFolder &amp; NameOfNewFolder &amp; ":") as text
+end mkdir
+
+on MsgBox(message)
+	display dialog message
+end MsgBox</string>
+				</dict>
+				<key>Application</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.RunScript</string>
+				<key>CFBundleVersion</key>
+				<string>1.0</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>Utility</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunScriptAction</string>
+				<key>IgnoresInput</key>
+				<true/>
+				<key>InputUUID</key>
+				<string>520A3B67-E5C6-46B6-AB31-1E37406AF812</string>
+				<key>Keywords</key>
+				<array>
+					<string>Run</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>C116CCCB-1A82-4870-B95B-ED824405D639</string>
+				<key>ShowWhenRun</key>
+				<false/>
+				<key>StartAction</key>
+				<false/>
+				<key>UUID</key>
+				<string>730713D1-CEAC-4167-9996-94A0685FE11E</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<string>on run {input, parameters}
+	
+	(* Your script goes here *)
+	
+	return input
+end run</string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/English.lproj/main.nib</string>
+			</dict>
+			<key>collapsed</key>
+			<false/>
+			<key>isOutletsVisible</key>
+			<false/>
+			<key>isViewVisible</key>
+			<true/>
+			<key>location</key>
+			<string>852.000000:732.333313</string>
+		</dict>
+	</array>
+	<key>connectors</key>
+	<dict/>
+	<key>state</key>
+	<dict>
+		<key>actionsSplitView</key>
+		<real>175</real>
+		<key>layoutFrame</key>
+		<string>{{0, 0}, {857, 641}}</string>
+		<key>layoutScrollPosition</key>
+		<string>{{0, 0}, {857, 641}}</string>
+		<key>mainSplitView</key>
+		<real>362</real>
+		<key>minorSplitView</key>
+		<real>499</real>
+		<key>windowFrame</key>
+		<string>{{3, 7}, {1249, 769}}</string>
+	</dict>
+</dict>
+</plist>

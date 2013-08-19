@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="iso-8859-1"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>FusionCharts v3 Documentation</title>
+<link rel="stylesheet" href="css/Style.css" type="text/css" />
+<script type="text/javascript" src="assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="assets/prettify/prettify.css" />
+<script type="text/javascript" src="assets/ui/js/jquery-1.4.2.min.js" ></script>
+<script type="text/javascript" src="assets/ui/js/lib.js" ></script>
+</head>
+
+
+<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+  <tr> 
+    <td class="pageHeader">FusionCharts and Flash &gt; Using Flex</td>
+  </tr>
+  <tr> 
+    <td valign="top" class="text">
+       <p>FusionCharts can be very easily implemented in your Adobe Flex Applications using our specialized product <a href="http://www.fusioncharts.com/flex" target="_blank">FusionCharts for Flex</a>. FusionCharts for Flex contains a separate set of chart SWF files that allow you to load the charts in Flex. These are custom built SWFs for loading in Adobe Flex, Flash CS3, CS4 and CS5. When using Flex IDE (Eclipse), the charts can be visually dragged and dropped from the components and configured.  It also provides a rich API to help the developers connect to various Flex data sources. FusionCharts for Flex currently supports Flex SDK 2, 3 and 4.</p>
+       <p>Let's see how to create a chart in Adobe Flex using FusionCharts for Flex. </p>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" class="header">Setting up </td>
+  </tr>
+  <tr>
+    <td valign="top" class="text">
+       <p>To create a chart in Flex, first of all you need to <a href="http://www.fusioncharts.com/flex/download" target="_blank">download the FusionCharts for Flex pack</a>, get the chart SWF files and <span class="codeInline">FusionCharts.swc</span> file from the <span class="codeInline">Charts</span> folder of the Flex Download&nbsp;Pack. Once done, please go through the installation processes for Flex Builder from the links given below:</p>
+       <ul>
+          <li><a href="http://www.fusioncharts.com/flex/docs/charts/Contents/installation_types.html" target="_blank">Install in Flex Builder 4</a></li>
+          <li><a href="http://www.fusioncharts.com/flex/docs/charts/Contents/installation_types_flexBuilder3.html" target="_blank">Install in Flex Builder 3</a></li>
+          <li><a href="http://www.fusioncharts.com/flex/docs/charts/Contents/installation_types_flexBuilder2.html" target="_blank">Install in Flex Builder 2</a></li>
+      </ul>
+       <p>Once done, let's move on to the Flex Builder :</p>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" class="header">Source View </td>
+  </tr>
+  <tr>
+    <td valign="top" class="text">
+       <p>In the code view , you can add a chart adding the following bold lines :</p>
+       <pre class="prettyprint code_container">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;mx:Application xmlns:mx=&quot;http://www.adobe.com/2006/mxml&quot; layout=&quot;absolute&quot; <strong>xmlns:ns1=&quot;com.fusioncharts.components.*&quot;</strong>&gt;
+  &lt;<strong>ns1:FusionCharts x=&quot;10&quot; y=&quot;10&quot; FCDataURL=&quot;Data.xml&quot; FCChartType=&quot;Column3D&quot;</strong>/&gt;
+&lt;/mx:Application&gt; </pre>
+       <p>The above code will render a Column3D chart with data from <span class="codeInline">Data.xml</span> file. Instead of XML URL, you can also provide XML as string here using <span class="codeInline">FCDataXML</span> property. </p>
+       <p>The <span class="codeInline">Data.xml</span> file contains the data for  chart which looks like the code shown below:</p>
+       <pre class="code_container prettyprint">&lt;chart caption='Half Yearly Sales Summary' subcaption='For the year 2008 - First Half' xAxisName='Month' yAxisName='Sales' numberPrefix='$'&gt;
+  &lt;set label='Jan' value='17400' /&gt;
+  &lt;set label='Feb' value='19800' /&gt;
+  &lt;set label='Mar' value='21800' /&gt;
+  &lt;set label='Apr' value='23000' /&gt;
+  &lt;set label='May' value='29000' /&gt;
+  &lt;set label='June' value='27600' /&gt;
+&lt;/chart&gt; </pre>
+		<p>This will generate a chart like the image shown below:</p>
+		<p><img src="Images/code/Flash/Flex.jpg" width="415" height="315" /></p>
+		<p class="highlightBlock">Code for the above example is present in <span class="codeInline">Download Pack &gt; Code &gt; Flash Examples &gt; Flex</span> folder. </p>
+    </td>
+  </tr>
+  
+  <tr>
+     <td valign="top" class="header"><a name="script" id="script"></a>Using Script</td>
+  </tr>
+  <tr>
+     <td valign="top" class="text">
+       <p>Apart from the MXML code shown above you can also write Script to generate a chart. </p>
+     </td>
+  </tr>
+  <tr>
+     <td valign="top" class="text">
+<pre class="code_container prettyprint lang-js">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;mx:Application xmlns:mx=&quot;http://www.adobe.com/2006/mxml&quot; initialize=&quot;showChart()&quot; layout=&quot;absolute&quot; &gt;
+  &lt;mx:Script&gt;
+    &lt;![CDATA[
+      <span class="codeComment">//Import FusionCharts for Flex class </span>
+      import com.fusioncharts.components.FusionCharts;
+      <span class="codeComment">//Execute the function when the application initializes </span>
+      private function showChart():void
+      {
+        <span class="codeComment">//Instantiate a FusionCharts for Flex object </span>
+        var FC:FusionCharts=new FusionCharts();
+        <span class="codeComment">//Set chart type </span>
+        FC.FCChartType=&quot;Column3D&quot;;
+        <span class="codeComment">//Set chart data source URL </span>
+        FC.FCDataURL=&quot;Data.xml&quot;;        
+        <span class="codeComment">//Configure x, y position on stage </span>
+        FC.x=10;
+        FC.y=10;
+        <span class="codeComment">//Add to display list</span>
+        addChild(FC);
+      }
+    ]]&gt;
+  &lt;/mx:Script&gt; 
+&lt;/mx:Application&gt;</pre>
+    </td>
+  </tr>
+  <tr>
+     <td valign="top" class="text">&nbsp;</td>
+  </tr>
+  <tr>
+     <td valign="top" class="text">FusionCharts for Flex offers a wide range of features that includes event handling, exporting, supporting Flex native data formats like ArrayCollection , Model, XMLList etc. You may read more on it at <a href="http://www.fusioncharts.com/flex/docs" target="_blank">www.fusioncharts.com/flex/docs </a></td>
+  </tr>
+  <tr>
+    <td valign="top" class="text">&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

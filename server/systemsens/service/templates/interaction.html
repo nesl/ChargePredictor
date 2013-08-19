@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+
+{% block title %} Interaction details {% endblock %}
+{% block content %}
+
+{% if isQuerySet %}
+
+<table border="0" width="100%">
+<tbody>
+   <tr>
+       <td width = "50%">
+               <font size="4" color="#0000ff">
+                     <a
+                         href="http://128.97.93.158/service/viz/">Main</a> |
+                     <a href="#screen">Screen</a> |
+                     <a href="#applications">Applications</a> |
+                     <a href="#calls">Calls</a> 
+                     </font></b>
+              </td>
+   </tr>
+</tbody>
+</table>
+
+
+
+
+<br>
+<br>
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+	   <td><font size="4"><strong><a name="screen">Screen</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img
+src="http://128.97.93.158/service/viz/screen_events/{{imei}}/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a
+                      name="applications">Applications</a></strong></font>
+      </td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/apps/{{imei}}/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+<!--
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a name="calls">Calls</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/calls/{{imei}}/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+-->
+
+{% endif %}
+
+{% endblock %}

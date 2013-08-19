@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="iso-8859-1"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>FusionCharts v3 Documentation</title>
+<link rel="stylesheet" href="../css/Style.css" type="text/css" />
+<script type="text/javascript" src="../assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="../assets/prettify/prettify.css" />
+<script type="text/javascript" src="../assets/ui/js/jquery-1.4.2.min.js" ></script>
+<script type="text/javascript" src="../assets/ui/js/lib.js" ></script>
+</head>
+
+<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+  <tr> 
+    <td class="pageHeader">XML/JSON Attributes for Scatter and Bubble Charts</td>
+  </tr>
+  <tr>
+  <td valign="top" class="text">
+    <p>Bubble and scatter charts are used for plotting  data that can be defined in terms of multiple numeric parameters. In these charts,  both X and Y axes are numeric. So, the position of a data point is an indicator  of two distinct numeric values.  </p>
+    <p>The scatter chart is used for plotting data which is defined&nbsp;in terms of two numeric parameters.</p>
+    <p><img src="Images/ScatterSample.jpg" width="500" height="300" alt="" /></p>
+    <p>Scatter charts are multi-series charts, but their data format is  slightly different from that of conventional multi-series charts. Following is the data for the above chart:</p>
+	 
+	 <div class="container">
+	    <ul class="tabs">
+   	    <li><a href="#tab7">XML</a></li>
+      	 <li><a href="#tab8">JSON</a></li>
+	    </ul>
+   	 <div class="tab_container">
+    		<div id="tab7" class="tab_content">
+    		  <pre class="prettyprint code_container lang-xml">&lt;chart caption='Income Expenditure Analysis' subcaption='(sample survey done among buyers of LCD TV)' xAxisName='Salary' yAxisName='Amount spent on LCD TV'&gt;
+  &lt;categories&gt;
+    &lt;category x='0' /&gt;
+    &lt;category name='$2000' x='2000' /&gt;
+    &lt;category name='$4000' x='4000' /&gt;
+    &lt;category name='$6000' x='6000' /&gt;
+    &lt;category name='$8000' x='8000' /&gt;
+    &lt;category x='10000'/&gt;
+  &lt;/categories&gt;
+  &lt;dataset color='000000'&gt;
+    &lt;set x='2500' y='350' /&gt;
+    &lt;set x='2200' y='240' /&gt;
+    &lt;set x='3000' y='380' /&gt;
+    &lt;set x='2800' y='325' /&gt;
+    &lt;set x='3250' y='650' /&gt;
+    &lt;set x='3200' y='541' /&gt;
+. . .
+  &lt;/dataset&gt;
+&lt;/chart&gt; </pre>
+    		</div>
+			<div id="tab8" class="tab_content">
+			  <pre class="prettyprint code_container">{
+  "chart":{
+    "caption":"Income Expenditure Analysis",
+    "subcaption":"(sample survey done among buyers of LCD TV)",
+    "xaxisname":"Salary",
+    "yaxisname":"Amount spent on LCD TV"
+  },
+  "categories":[{
+      "category":[{
+          "x":"0"
+        },
+        {
+          "name":"$2000",
+          "x":"2000"
+        },
+        {
+          "name":"$4000",
+          "x":"4000"
+        },
+        {
+          "name":"$6000",
+          "x":"6000"
+        },
+        {
+          "name":"$8000",
+          "x":"8000"
+        },
+        {
+          "x":"10000"
+        }
+      ]
+    }
+  ],
+  "dataset":[{
+      "color":"000000",
+      "data":[{
+          "x":"2500",
+          "y":"350"
+        },
+        {
+          "x":"2200",
+          "y":"240"
+        },
+        {
+          "x":"3000",
+          "y":"380"
+        },
+        {
+          "x":"2800",
+          "y":"325"
+        },
+        {
+          "x":"3250",
+          "y":"650"
+        },
+        {
+          "x":"3200",
+          "y":"541"
+        }
+      ]
+    }
+  ]
+...
+}</pre>
+			</div>
+	    </div>
+	  </div><div style="clear:both"></div>
+	 
+
+<p>The bubble chart is used for plotting data, which is defined in terms of three numeric parameters. The third numeric  parameter is indicated by the diameter of the bubble.</p>
+    <p><img src="Images/BubbleSample.jpg" width="500" height="300" alt="Sample bubble chart" /></p>
+    <p>The XML/JSON format of a bubble chart is slightly different from that of a scatter chart, this is because the bubble chart plots an additional numeric parameter. Following is the data for the above chart:</p>
+    
+	 <div class="container">
+	    <ul class="tabs">
+   	    <li><a href="#tab9">XML</a></li>
+      	 <li><a href="#tab10">JSON</a></li>
+	    </ul>
+   	 <div class="tab_container">
+    		<div id="tab9" class="tab_content">
+    		  <pre class="prettyprint code_container lang-xml">&lt;chart caption='Portfolio of Investments in Equities' subcaption='(diameter of bubble indicates quantity of equities held)' xAxisName='Acquisition Price' yAxisName='Current Price' &gt;
+  &lt;categories&gt;
+    &lt;category x='0' /&gt;
+    &lt;category label='$20' x='20' /&gt;
+    &lt;category label='$40' x='40' /&gt;
+    &lt;category label='$60' x='60' /&gt;
+    &lt;category label='$80' x='80' /&gt;
+    &lt;category label='$100' x='100' /&gt;
+    &lt;category x='120' /&gt;
+  &lt;/categories&gt;
+  &lt;dataset&gt;
+    &lt;set x='7' y='30' z='1000' name='A' /&gt;
+    &lt;set x='45' y='100' z='1500' name='B' /&gt;
+    &lt;set x='72' y='100' z='500' name='C' /&gt;
+    &lt;set x='95' y='40' z='800' name='D' /&gt;
+    &lt;set x='105' y='150' z='900' name='E' /&gt;
+    &lt;set x='25' y='35' z='600' name='F' /&gt;
+    &lt;set x='15' y='50' z='800' name='G' /&gt;
+  &lt;/dataset&gt;
+&lt;/chart&gt;</pre>
+    		</div>
+			<div id="tab10" class="tab_content"><pre class="prettyprint code_container">{
+  "chart":{
+    "caption":"Portfolio of Investments in Equities",
+    "subcaption":"(diameter of bubble indicates quantity of equities held)",
+    "xaxisname":"Acquisition Price",
+    "yaxisname":"Current Price"
+  },
+  "categories":[{
+      "category":[{
+          "x":"0"
+        },
+        {
+          "label":"$20",
+          "x":"20"
+        },
+        {
+          "label":"$40",
+          "x":"40"
+        },
+        {
+          "label":"$60",
+          "x":"60"
+        },
+        {
+          "label":"$80",
+          "x":"80"
+        },
+        {
+          "label":"$100",
+          "x":"100"
+        },
+        {
+          "x":"120"
+        }
+      ]
+    }
+  ],
+  "dataset":[{
+      "data":[{
+          "x":"7",
+          "y":"30",
+          "z":"1000",
+          "name":"A"
+        },
+        {
+          "x":"45",
+          "y":"100",
+          "z":"1500",
+          "name":"B"
+        },
+        {
+          "x":"72",
+          "y":"100",
+          "z":"500",
+          "name":"C"
+        },
+        {
+          "x":"95",
+          "y":"40",
+          "z":"800",
+          "name":"D"
+        },
+        {
+          "x":"105",
+          "y":"150",
+          "z":"900",
+          "name":"E"
+        },
+        {
+          "x":"25",
+          "y":"35",
+          "z":"600",
+          "name":"F"
+        },
+        {
+          "x":"15",
+          "y":"50",
+          "z":"800",
+          "name":"G"
+        }
+      ]
+    }
+  ]
+}</pre></div>
+	    </div>
+	  </div><div style="clear:both"></div>
+	 
+	 
+	 
+<p class="highlightBlock">In case of  bubble and scatter charts categories are optional, since the X axis is numeric.  So, categories are only used for defining the X axis scale.  Unlike  other multi-series charts where each dataset contains the same number of <span class="codeInline">&lt;set&gt;</span>  elements as the number of categories, scatter and bubble charts can have varying  number of <span class="codeInline">&lt;set&gt;</span> elements under each dataset. </p>
+    </td>
+    </tr>
+      <tr>
+      <td valign="top" class='header'>Displaying labels on bubbles</td>   
+      </tr>
+      <tr>
+      <td valign='top' class='text'>&nbsp;</td>
+      </tr>
+      <tr>
+      <td valign='top' class='text'>Labels can be displayed on each bubble of a bubble chart. For this however, every <span class="codeInline">&lt;set&gt;</span> element must be allotted a label or an identifier using <span class="codeInline">name</span> attribute:
+<pre class="prettyprint code_container lang-xml">&lt;set x='45' y='100' z='1500' name='B' /&gt;</pre>
+      <p>To make the labels visible over the bubbles, <span class="codeInline">showValues</span> attribute must be declared in the
+        <span class="codeInline">&lt;chart&gt;</span> element:</p>
+      <pre class="prettyprint code_container">&lt;chart showValues='1' . . . /&gt;</pre>
+      <p><img src="Images/BubbleLabel.jpg" width="500" height="300" alt="Showing lbubbles with labels" /></p>
+      </td>
+      </tr>
+      <tr>
+      <td valign="top" class="header">Drawing quadrants on bubble and scatter charts</td>
+      </tr>
+      <tr>
+      <td valign="top" class="text">
+        <p>Dividing  the canvas of a bubble/scatter chart into quadrants makes analysis of the chart  easier. Quadrant lines can be added to the chart by declaring <span class="codeInline">drawQuadrant</span> attribute of the <span class="codeInline">&lt;chart&gt;</span> element.</p>
+        <pre class="prettyprint code_container">&lt;chart drawQuadrant='1' . . . &gt;</pre></td>
+     </tr>
+      <tr>
+      <td valign="top" class="text"><p><img src="Images/SimpleQuadrants.jpg" width="500" height="300" alt="Chart with default quadrant" /></p>
+      <p>By default, the quadrant lines appear at the center of the canvas, but their position can be customized using <span class="codeInline">quadrantXVal</span> and <span class="codeInline">quadrantYVal</span> attributes. <span class="codeInline">quadrantXVal</span> sets the position of the vertical quadrant line relative to the X axis and  <span class="codeInline">quadrantYVal </span>sets the position of the horizontal quadrant line relative to the Y  axis.The value of these attributes must be within the range of  their corresponding relative axis (and not pixels). In the chart above, since X axis ranges from 0-120 and Y axis ranges from 0-120, the following data is used to customize the position of the quadrant lines: </p>
+
+      <pre class="prettyprint code_container">&lt;chart quadrantXVal='70' quadrantYVal='70' . . . &gt;</pre></td>
+  </tr>
+  <tr>
+  <td valign="top" class="text"><p><img src="Images/QuadrantsCustom.jpg" width="500" height="300" alt="Customized quadrant position" /></p>
+  <p>Each quadrant can have its own title in the form of a label. The attributes for defining labels for the upper quadrants are <span class="codeInline">quadrantLabelTL</span> and <span class="codeInline">quadrantLabelTR</span> (<span class="codeInline">TL</span> for top left  and <span class="codeInline">TR</span> for top right quadrant). Similarly, the attributes for defining the labels for the  lower quadrants are <span class="codeInline">quadrantLabelBL</span> and <span class="codeInline">quadrantLabelBR</span> (<span class="codeInline">BL</span> for bottom left and <span class="codeInline">BR</span> for bottom right quadrant).</p>
+  <pre class="prettyprint code_container">&lt;chart quadrantLabelTL='Good' quadrantLabelTR='Moderate' quadrantLabelBL='Stagnant' quadrantLabelBR='Bad' . . . &gt;</pre></td>
+  </tr>
+  <tr>
+  <td valign="top" class="text"><p><img src="Images/QuadrantLabel.jpg" width="500" height="300" alt="Quadrant label" /></p>
+  <p>Customization of quadrant&nbsp;lines and labels can be done using following attributes:</p>
+  <table  class="table" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+  <td class="header" width="25%">Attribute Name</td>
+			<td class="header" width="15%">Type</td>
+			<td class="header" width="15%">Range</td>
+			<td class="header" width='45%'>Description</td>									
+		</tr>
+        <tr>		
+			<td class="codeInline" width="25%" valign="top">quadrantLineColor</td>
+			<td class="text" width="15%" valign="top">Color</td>
+			<td class="text" width="15%" valign="top">Hex Code</td>
+			<td class="text" width='45%' valign='top'>Lets you set the color of the quadrant lines.</td>	
+		</tr>
+        <tr>		
+			<td class="codeInline" width="25%" valign="top">quadrantLineThickness</td>
+			<td class="text" width="15%" valign="top">Number</td>
+			<td class="text" width="15%" valign="top">In Pixels</td>
+			<td class="text" width='45%' valign='top'>Lets you set the thickness of the quadrant lines.</td>	
+		</tr>
+        <tr>		
+			<td class="codeInline" width="25%" valign="top">quadrantLineAlpha </td>
+			<td class="text" width="15%" valign="top">Number</td>
+			<td class="text" width="15%" valign="top">0-100</td>
+			<td class="text" width='45%' valign='top'>Lets you control the transparency of the quadrant lines.</td>	
+		</tr>
+        <tr>		
+			<td class="codeInline" width="25%" valign="top">quadrantLineIsDashed</td>
+			<td class="text" width="15%" valign="top">Boolean</td>
+			<td class="text" width="15%" valign="top">1/0</td>
+			<td class="text" width='45%' valign='top'>Whether the quadrant lines should appear as dashed.</td>	
+		</tr>
+        <tr>		
+			<td class="codeInline" width="25%" valign="top">quadrantLineDashLen </td>
+			<td class="text" width="15%" valign="top">Number</td>
+			<td class="text" width="15%" valign="top">In Pixels</td>
+			<td class="text" width='45%' valign='top'>If you've opted to show quadrant lines as dashed, this attribute lets you specify the length of the dash.</td>	
+		</tr>
+        <tr>		
+			<td class="codeInline" width="25%" valign="top">quadrantLineDashGap</td>
+			<td class="text" width="15%" valign="top">Number</td>
+			<td class="text" width="15%" valign="top">In Pixels</td>
+			<td class="text" width='45%' valign='top'>If you've opted to show quadrant lines as dashed, this attribute lets you specify the length of the dash gap.</td>	
+		</tr>
+        <tr>		
+			<td class="codeInline" width="25%" valign="top">quadrantLabelPadding</td>
+			<td class="text" width="15%" valign="top">Number</td>
+			<td class="text" width="15%" valign="top">In Pixels</td>
+			<td class="text" width='45%' valign='top'>This attribute lets you control the space between quadrant labels and the associated quadrant lines.</td>	
+		</tr></table>
+  </td>
+  </tr>
+  <tr>
+  <td class="text">&nbsp;</td>
+  </tr>
+  <tr>
+  <td valign="top" class="header">Segmenting  the X axis of bubble/scatter charts into categorical zones</td>
+  </tr>
+  <tr>
+  <td valign="text" class="text"><p>The X-axis of bubble/scatter chart  can be segmented into categorical zones using vertical trend lines.</p>
+    <img src="Images/TrendLineExample.jpg" width="500" height="300" />
+<p>Segmentation of the X-axis is done in&nbsp;the following manner:</p>
+  
+  <div class="container">
+	    <ul class="tabs">
+   	    <li><a href="#tab11">XML</a></li>
+      	 <li><a href="#tab12">JSON</a></li>
+	    </ul>
+   	 <div class="tab_container">
+    		<div id="tab11" class="tab_content"><pre class="prettyprint code_container">
+ &lt;vTrendLines&gt;
+    &lt;line startValue='1000' endValue='3000' displayValue='Low Income' isTrendZone='1' color='FF0000' alpha='5'/&gt;
+    &lt;line startValue='3000' endValue='7000' displayValue='Middle Income' isTrendZone='1' color='5B5B00' alpha='5'/&gt;
+    &lt;line startValue='7000' endValue='10000' displayValue='High Income' isTrendZone='1' color='009900' alpha='5'/&gt;
+ &lt;/vTrendLines&gt;</pre></div>
+			<div id="tab12" class="tab_content"><pre class="prettyprint code_container">"vtrendlines":[{
+      "line":[{
+          "startvalue":"1000",
+          "endvalue":"3000",
+          "displayvalue":"Low Income",
+          "istrendzone":"1",
+          "color":"FF0000",
+          "alpha":"5"
+        },
+        {
+          "startvalue":"3000",
+          "endvalue":"7000",
+          "displayvalue":"Middle Income",
+          "istrendzone":"1",
+          "color":"5B5B00",
+          "alpha":"5"
+        },
+        {
+          "startvalue":"7000",
+          "endvalue":"10000",
+          "displayvalue":"High Income",
+          "istrendzone":"1",
+          "color":"009900",
+          "alpha":"5"
+        }
+      ]
+    }
+  ]
+</pre></div>
+		 </div>
+	  </div><div style="clear:both"></div>
+  
+  
+  
+   </td>
+  </tr>
+  <tr>
+  <td valign="top" class="text">&nbsp;</td>
+  </tr>
+  <tr>
+  <td valign="top" class="header">Connecting scatter plots by a line in XY (Scatter) chart </td>
+  </tr>
+  <tr>
+  <td valign="text" class="text">
+    <p>In scatter  charts, the data points of a particular series (dataset) can be connected by a line. This can  be done by declaring <span class="codeInline">drawLine</span> attribute of the <span class="codeInline">&lt;dataset&gt;</span> element as under: </p>
+    <pre class="prettyprint code_container">&lt;dataset drawLine=&quot;1&quot; . . . &gt;</pre>    
+    <p>Following scatter chart contains two series (datsets), one of which comprises of only four data points that are connected by a line. The line acts a regression line for the scatter plots of the other series.</p>
+    <p><img src="Images/ScatterLine.jpg" width="500" height="300" alt="Scatter Chart with a line" /></p>  </td>
+  </tr>
+  </table>
+</body>
+</html>

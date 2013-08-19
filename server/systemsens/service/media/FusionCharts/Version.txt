@@ -1,0 +1,60 @@
+FusionCharts v3 - http://www.fusioncharts.com/ - Version History
+=========================================================================
+Current Version: FusionCharts v3.2.1 (Released on 6th October 2010)
+=========================================================================
+
+Version history
+v3.2.1 (6th October, 2010):
+---------------------------
+* Added useEllipsesWhenOverflow attribute to <chart> element that controls whether ellipses are to be used in chart labels
+* Marimekko chart now supports the new legend
+* Bug fix in label rendering mechanism of line and area charts, where last label was getting lesser space in rotated mode
+* Changes in FusionCharts JavaScript class:
+     - Improvements in JSON transcoder
+     - Support for font manipulation and STYLE manipulation when rendering JavaScript charts
+     - Customization of y-axis min and max values in JavaScript rendering 
+     - Compatibility with older PowerCharts and FusionWidgets
+     - Removal of swfUrl as compulsory construction parameter
+     - Additional cosmetic changes when using JavaScript rendering
+
+
+v3.2 (15th September, 2010):
+---------------------------
+* Automatic rendering of JavaScript charts on devices (like iPad and 
+  iPhone) where Flash player is not supported
+* 6 new chart types:
+    - 2D Pareto Chart
+    - 3D Pareto Chart
+    - Marimekko Chart
+    - 2D Stacked Column Line (Single Y axis)
+    - 3D Stacked Column Line (Single Y axis)
+    - Zoom Line Chart (with scrolling and pinning support)
+* Support for JSON data format
+* Support for LinkedCharts, where a single data source controls multiple charts
+* Interactive legends in charts that allow for selective 
+  showing/hiding of data series (or slicing, in case of pie charts)
+* Legends now support icons for each data series
+* Pie and Doughnut charts now support Legend
+* Stacked charts now support 100% stacked mode
+* Bubble and Scatter charts can now have visual quadrants with labels
+* Better management of labels on charts. Labels now have an auto rendering 
+  mode to prevent them from overlapping, the chart selects the best display mode 
+  for labels depending on the length of the labels and the width of the chart. 
+  Long labels are truncated, with ellipses appended to the truncated end of each
+  label, and a tooltip bearing the completed label text is displayed when 
+  the user hovers over a truncated label.
+* Support for line breaks and wrapping in all text elements including: caption, 
+  sub caption, X-axis title, Y-axis title, Labels and tooltips.
+* In Line charts, data values can now be positioned either above or below the 
+  dataplots. Automatic positioning of data values is also supported.
+  
+* Custom alignment of caption and sub caption using STYLES
+* Adjustment of minimum Y-axis value in stacked charts now supported
+* Advanced print management using JavaScript
+* Additional options for efficient event handling using JavaScript
+* Support for dynamic update of chart properties using JavaScript
+* Charts now support % based sizes along with dynamic resizing
+
+=========================================================================
+
+For information on previous versions, please visit http://www.fusioncharts.com/VersionHistory.asp

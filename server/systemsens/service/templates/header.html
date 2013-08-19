@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>CENS SystemSens</title>
+</head>
+
+<body style="background-color: rgb(255, 255, 255);" link="#0000ff"  vlink="#0000ff">
+
+
+
+<table border="0" cellpadding="3"  width="100%">
+    <tr>
+        <td width="99%">
+        </td>
+        <td>
+        <font size="4"> <a href="http://128.97.93.158/service/viz/logout/">logout</a>
+
+        </td>
+
+    </tr>
+</table>
+<table bgcolor="#eeeeee" border="0" cellpadding="3"  width="100%">
+<tbody>
+   <tr>
+      <td  valign="top"  align="center">
+          <p>
+            <font size="6"><b>SystemSens</b>
+          </p>
+      </td>
+
+      <td  valign="top"  align="center">
+          <form action="http://128.97.93.158/service/viz/" 
+              method="post">
+          <table border="0" cellspacing="0" >
+              <tr>
+                  <td>Start date:</td>
+                  <td align=left > 
+                      <select name=smonth value=''>
+                            {% for i in month_range %}
+                            {% ifequal i cur_month  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td align=left > 
+                        <select name=sday value=''>
+                            {% for i in day_range %}
+                            {% ifequal i cur_sday  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                  </select>
+                  </td>
+                  <td align=left > 
+                        <select name=syear >
+                      <option value='2010'>2010</option>
+                  </td>
+            </tr>
+            <tr>
+                  <td>End date:</td>
+                  <td align=left > 
+                      <select name=emonth value=''>
+                            {% for i in month_range %}
+                            {% ifequal i cur_month  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td align=left > 
+                        <select name=eday >
+                            {% for i in day_range %}
+                            {% ifequal i cur_eday  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                  </select>
+                  </td>
+                  <td align=left > 
+                        <select name=eyear >
+                      <option value='2010'>2010</option>
+                  </td>
+
+            </tr>
+            <tr>
+                <td></td><td></td><td></td>
+                <td>
+                  <input type=submit value=Submit>
+                </td>
+            </tr>
+      </table>
+  </form>
+     </td>
+   </tr>
+</tbody>
+</table>
+
+
+
+

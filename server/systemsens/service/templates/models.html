@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>CENS SystemSens</title>
+</head>
+
+<body style="background-color: rgb(255, 255, 255);" link="#0000ff"  vlink="#0000ff">
+
+
+
+<table border="0" cellpadding="3"  width="100%">
+    <tr>
+        <td width="90%">
+        </td>
+        <td>
+        <font size="4"> <a href="http://128.97.93.158/service/viz/logout/">logout</a>
+            {{user}}
+
+        </td>
+
+    </tr>
+</table>
+<table bgcolor="#eeeeee" border="0" cellpadding="3"  width="100%">
+<tbody>
+   <tr>
+      <td  valign="top"  align="center">
+          <p>
+          <font size="6"><b>SystemSens</font>
+              <font size="5">  Energy Modeling </font></b>
+          </p>
+      </td>
+
+      <td  valign="top"  align="center">
+          <form
+              method="post"
+              name = "queryForm">
+          <table border="0" cellspacing="0" >
+              <tr>
+                  <td> </td>
+                  <td> </td>
+                  <td> </td>
+                  <td> </td>
+                  <td>Hour</td>
+                  <td>Minute</td>
+                  <td>Month</td>
+                  <td>Day</td>
+                  <td>Year</td>
+
+
+              </tr>
+              <tr>
+                  <td>Interval</td>
+                  <td><input type="text" name=ininterval 
+                      value={{sinterval}}></td>
+                  <td> </td>
+                  <td>Start</td>
+                  <td align=left > 
+                      <select name=shour value=''>
+                            {% for i in hour_range %}
+                            {% ifequal i cur_shour  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select><b>:</b>
+                  </td>
+                  <td align=left > 
+                      <select name=sminute value=''>
+                            {% for i in minute_range %}
+                            {% ifequal i cur_sminute  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+                  <td align=left > 
+                      <select name=smonth value=''>
+                            {% for i in month_range %}
+                            {% ifequal i cur_smonth  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td align=left > 
+                        <select name=sday value=''>
+                            {% for i in day_range %}
+                            {% ifequal i cur_sday  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+                  <td align=left > 
+                        <select name=syear >
+                            {% for i in year_range %}
+                            {% ifequal i cur_syear  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+            </tr>
+            <tr>
+                  <td> </td>
+                  <td> </td>
+                  <td> </td>
+
+                  <td>End</td>
+                  <td align=left > 
+                      <select name=ehour value=''>
+                            {% for i in hour_range %}
+                            {% ifequal i cur_ehour  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select><b>:</b>
+                  </td>
+                  <td align=left > 
+                      <select name=eminute value=''>
+                            {% for i in minute_range %}
+                            {% ifequal i cur_eminute  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+
+                  <td align=left > 
+                      <select name=emonth value=''>
+                            {% for i in month_range %}
+                            {% ifequal i cur_emonth  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+                  <td align=left > 
+                        <select name=eday >
+                            {% for i in day_range %}
+                            {% ifequal i cur_eday  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                  </select>
+                  </td>
+                  <td align=left > 
+                        <select name=eyear >
+                            {% for i in year_range %}
+                            {% ifequal i cur_eyear  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+
+            </tr>
+            
+            </table>
+            <table border="0" cellspacing="0" >
+            <tr>
+                <td>
+                </td>
+
+                <td>
+                  <input type=submit value=Submit>
+                </td>
+
+                <td>
+                </td>
+            </tr>
+            </table>
+  </form>
+     </td>
+   </tr>
+</tbody>
+</table>
+
+{% if isQuerySet %}
+
+<table border="0" width="100%">
+<tbody>
+   <tr>
+       <td width = "50%">
+               <font size="4" color="#0000ff">
+                     <a
+                         href="http://128.97.93.158/service/viz/">Main</a> |
+                     <a href="#summary">Summary</a> |
+                     <a href="#residuals">Residuals</a> 
+                     </font></b>
+              </td>
+   </tr>
+</tbody>
+</table>
+
+
+
+
+<br>
+<br>
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+	   <td><font size="4"><strong><a name="summary">Summary</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<iframe width="100%" height="400" frameborder=0
+    src="http://128.97.93.158/R/fit.r?imei={{imei}}&start={{user_query.startdate}}&end={{user_query.enddate}}&interval={{sinterval}}">
+</iframe>
+</p>
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+	   <td><font size="4"><strong><a name="residuals">Residuals</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img
+src="http://128.97.93.158/R/residuals.r?imei={{imei}}&start={{user_query.startdate}}&end={{user_query.enddate}}&interval={{sinterval}}"></img>
+</p>
+
+
+{% endif %}
+
+
+</body>
+</html>
+
+

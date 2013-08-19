@@ -1,0 +1,582 @@
+{
+  "namespace":"edu.ucla.cens.systemsens.avro",
+  "protocol":"Logs","types":[
+    {
+      "type":"record",
+      "name":"ActivitylogRecord",
+      "fields":[
+        {
+          "name":"entries","type":{
+            "type":"array",
+            "items":{
+              "type":"record",
+              "name":"ActivitylogEntry",
+              "fields":[
+                {
+                  "name":"time_stamp","type":"long", "default":-1
+                },
+                {
+                  "name":"action","type":["string", "null"]
+                },
+                {
+                  "name":"task","type":"int"
+                },
+                {
+                  "name":"event","type":["string", "null"]
+                },
+                {
+                  "name":"activity","type":["string", "null"]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type":"record",
+      "name":"AppresourceRecord",
+      "fields":[
+        
+        {
+          "name":"entries","type":{
+            "type":"map",
+            "values":{
+              "type":"record",
+              "name":"AppresourceEntry",
+              "fields":[
+                {
+                  "name":"SharedDirty","type":"int"
+                },
+                {
+                  "name":"TotalPss","type":"int"
+                },
+                {
+                  "name":"UserCpu","type":"float"
+                },
+                {
+                  "name":"SystemCpu","type":"float"
+                },
+                {
+                  "name":"PrivateDirty","type":"int"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+            "name":"BatteryRecord","type":"record",
+            "fields":[
+              {
+                "name":"status","type":["string", "null"]
+              },
+              {
+                "name":"level","type":"float"
+              },
+              {
+                "name":"current","type":"int"
+              },
+              {
+                "name":"health","type":["string", "null"]
+              },
+              {
+                "name":"voltage","type":"int"
+              },
+              {
+                "name":"temperture","type":"float"
+              }
+            ]
+    },
+    {
+
+            "name":"CallRecord","type":"record",
+            "fields":[
+             {
+              "name":"number","type":["string", "null"]
+              },
+              {
+              "name":"timestamp","type":"long", "default":-1
+              },
+              {
+              "name":"duration","type":"long", "default":-1
+              },
+              {
+              "name":"callType","type":["string", "null"]
+              },
+              {
+              "name":"name","type":["string", "null"]
+              },
+              {
+              "name":"numberType","type":["string", "null"]
+              },
+              {
+              "name":"new","type":"int", "default":-1
+              }
+            ]
+    },
+    {
+
+            "name":"CallforwardingRecord","type":"record",
+            "fields":[
+              {
+                "name":"state","type":"boolean"
+              }
+            ]
+    },
+    {
+
+
+            "name":"CallstateRecord","type":"record",
+            "fields":[
+              { 
+                "name":"state","type":["string", "null"]
+              },    
+			  { 
+                "name":"number", "type":["string", "null"]
+              }
+            ]
+          
+
+    },
+    {
+
+            "name":"CelllocationRecord","type":"record",
+            "fields":[
+              {
+                "name":"location","type":["string", "null"]
+              }
+            ]
+    },
+    {
+            "name":"CpuRecord","type":"record",
+            "fields":[
+              {
+                "name":"Processes","type":"long", "default":-1
+              },
+              {
+                "name":"BootTime","type":"long", "default":-1
+              },
+              {
+                "name":"ContextSwitch","type":"long", "default":-1
+              },
+              {
+                "name":"freq","type":"float"
+              },
+              {
+                "name":"user","type":"float"
+              },
+              {
+                "name":"total","type":"float"
+              },
+              {
+                "name":"system","type":"float"
+              },
+              {
+                "name":"nice","type":"float"
+              }
+            ]
+    },
+    {
+            "name":"DataconnectionRecord","type":"record",
+            "fields":[
+              {
+                "name":"state","type":["string", "null"]
+              },
+              {
+                "name":"network","type":["string", "null"]
+              }
+            ]
+    },
+    {
+            "name":"MeminfoRecord","type":"record",
+            "fields":[
+              {
+                "name":"entries","type":{ "type" : "map", "values" : "long"}
+			  }
+            ]
+    },
+    {
+            "name":"MessageRecord","type":"record",
+            "fields":[
+              {
+                "name":"state","type":"boolean"
+              }
+            ]
+    },
+    {
+      "type":"record",
+      "name":"NetdevRecord",
+      "fields":[
+        
+        {
+          "name":"entries","type":{
+            "type":"map",
+            "values":{
+              "type":"record",
+              "name":"NetdevEntry",
+              "fields":[
+                {
+                  "name":"RxPackets","type":"long", "default":-1
+                },
+                {
+                  "name":"TxBytes","type":"long", "default":-1
+                },
+                {
+                  "name":"RxBytes","type":"long", "default":-1
+                },
+                {
+                  "name":"TxPackets","type":"long", "default":-1
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+            "name":"NetiflogRecord","type":"record",
+            "fields":[
+              {
+                "name":"TotalTxBytes","type":"long", "default":-1
+              },
+              {
+                "name":"TotalRxPackets","type":"long", "default":-1
+              },
+              {
+                "name":"MobileTxBytes","type":"long", "default":-1
+              },
+              {
+                "name":"MobileTxPackets","type":"long", "default":-1
+              },
+              {
+                "name":"TotalTxPackets","type":"long", "default":-1
+              },
+              {
+                "name":"MobileRxPackets","type":"long", "default":-1
+              },
+              {
+                "name":"MobileRxBytes","type":"long", "default":-1
+              },
+              {
+                "name":"TotalRxBytes","type":"long", "default":-1
+              }
+            ]
+    },
+    {
+            "name":"NetlocationRecord","type":"record",
+            "fields":[
+              {
+                "name":"Lat","type":"float"
+              },
+              {
+                "name":"provider","type":["string", "null"]
+              },
+              {
+                "name":"Lon","type":"float"
+              },
+              {
+                "name":"Accuracy","type":"float"
+              }
+            ]
+    },
+    {
+      "type":"record",
+      "name":"NetlogRecord",
+      "fields":[
+        {
+          "name":"entries","type":{
+            "type":"map",
+            "values":{
+              "type":"record",
+              "name":"NetlogEntry",
+              "fields":[
+                {
+                  "name":"Rx","type":"long", "default":-1
+                },
+                {
+                  "name":"Tx","type":"long", "default":-1
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+            "name":"NetworkRecord","type":"record",
+            "fields":[
+              {
+                "name":"state","type":["string", "null"]
+              },
+			  {
+                "name":"info","type":["null", 
+										{"name": "WifiinfoEntry", "type":"record", 
+												"fields":[
+												{"name": "bssid", "type":["string", "null"]},
+												{"name": "ipaddr", "type":"int"},
+												{"name": "linkspeed", "type":"int"},
+												{"name": "macaddr", "type":["string", "null"]},
+												{"name": "networkid", "type":"int"},
+												{"name": "rssi", "type":"int"},
+												{"name": "ssid", "type":["string", "null"]}
+												]
+										}
+									]
+				}
+            ]
+    },
+	{
+      "type":"record",
+      "name":"CalendarRecord",
+      "fields":[
+        
+        {
+          "name":"entries","type":{
+            "type":"array",
+            "items":{
+              "type":"record",
+              "name":"CalendarEntry",
+              "fields":[
+				{
+				  "name":"Title","type":["string", "null"]
+				},
+                {
+                  "name":"Start","type":"long", "default":-1
+                },
+                {
+                  "name":"End","type":"long", "default":-1
+                },
+                {
+                  "name":"AllDay","type":"boolean"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type":"record",
+      "name":"RecentappsRecord",
+      "fields":[
+        
+        {
+          "name":"entries","type":{
+            "type":"array",
+            "items":{
+              "type":"record",
+              "name":"RecentappsEntry",
+              "fields":[
+                {
+                  "name":"taskID","type":"int"
+                },
+                {
+                  "name":"ComponentName","type":["string", "null"]
+                },
+                {
+                  "name":"OrigActivity","type":["string", "null"]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+            "name":"ScreenRecord","type":"record",
+            "fields":[
+              {
+                "name":"status","type":["string", "null"]
+              },
+              {
+                "name":"brightness","type":"int"
+              }
+            ]
+    },
+    {
+      "type":"record",
+      "name":"ServicelogRecord",
+      "fields":[
+        
+        {
+          "name":"entries","type":{
+            "type":"array",
+            "items":{
+              "type":"record",
+              "name":"ServicelogEntry",
+              "fields":[
+                {
+                  "name":"time_stamp","type":"long", "default":-1
+                },
+                {
+                  "name":"Intent","type":["string", "null"]
+                },
+                {
+                  "name":"PID","type":"int"
+                },
+                {
+                  "name":"Name","type":["string", "null"]
+                },
+                {
+                  "name":"Event","type":["string", "null"]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+            "name":"ServicestateRecord","type":"record",
+            "fields":[
+              {
+                "name":"operator_numeric","type":["string", "null"]
+              },
+              {
+                "name":"state","type":["string", "null"]
+              },
+              {
+                "name":"roaming","type":"boolean"
+              },
+              {
+                "name":"operator_alpha","type":["string", "null"]
+              }
+            ]
+    },
+    {
+            "name":"SignalRecord","type":"record",
+            "fields":[
+              {
+                "name":"biterror","type":"int"
+              },
+              {
+                "name":"signal","type":"int"
+              }
+            ]
+    },
+    {
+            "name":"SmsRecord","type":"record",
+            "fields":[
+              {
+                "name":"length","type":"int"
+              },
+              {
+                "name":"address","type":["string", "null"]
+              },
+              {
+                "name":"type","type":["string", "null"]
+              },
+              {
+                "name":"timestamp","type":"long", "default":-1
+              }
+            ]
+    },
+    {
+            "name":"SystemsensRecord","type":"record",
+            "fields":[
+              {
+                "name":"state","type":["string", "null"]
+              }
+            ]
+    },
+	    {
+            "name":"NetlocstateRecord","type":"record",
+            "fields":[
+              {
+                "name":"provider","type":["string", "null"]
+              },
+              {
+                "name":"status","type":["string", "null"]
+              },
+              {
+                "name":"extra","type":["string", "null"]
+              }
+            ]
+    },
+    {
+      "type":"record",
+      "name":"WifiscanRecord",
+      "fields":[
+        
+        {
+          "name":"entries","type":{
+            "type":"map",
+            "values":{
+              "type":"record",
+              "name":"WifiscanEntry",
+              "fields":[
+                {
+                  "name":"ssid","type":["string", "null"]
+                },
+                {
+                  "name":"capabilities","type":["string", "null"]
+                },
+                {
+                  "name":"freq","type":"int"
+                },
+                {
+                  "name":"level","type":"int"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+	{
+	  "name" : "LogEntry", "type" : "record", 
+	  "fields":[
+	    {
+            "name": "type", "type": "string"
+        }, {
+            "name": "gmt_time_stamp", "type": "long"
+        }, {
+            "name": "time_stamp", "type": "long"
+        },
+		{
+			"name":"data", "type": ["null",
+									"ActivitylogRecord",
+									"AppresourceRecord",
+									"BatteryRecord",
+									"CallRecord",
+									"CallforwardingRecord",
+									"CallstateRecord",
+									"CelllocationRecord",
+									"CpuRecord",
+									"DataconnectionRecord",
+									"MeminfoRecord",
+									"MessageRecord",
+									"NetdevRecord",
+									"NetiflogRecord",
+									"NetlocationRecord",
+									"NetlogRecord",
+									"NetworkRecord",
+									"RecentappsRecord",
+									"ScreenRecord",
+									"ServicelogRecord",
+									"ServicestateRecord",
+									"SignalRecord",
+									"SmsRecord",
+									"SystemsensRecord",
+									"NetlocstateRecord",
+									"WifiscanRecord",
+									"CalendarRecord"
+									
+									]
+				}
+			]
+	},
+	{
+	  "name" : "LogEntryArray", "type" : "record",
+	  "fields" : [
+		{"name": "ver", "type": "string"},
+		{"name": "user", "type": "string"},
+		{"name": "model", "type": "string"},
+		{"name": "phone", "type": "string"},
+		{"name":"entries", "type":{ "type" : "array", "items":"LogEntry"}}]
+	}
+	
+  ]
+}

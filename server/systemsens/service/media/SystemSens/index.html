@@ -1,0 +1,545 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>CENS SystemSens</title>
+
+	<link rel="stylesheet" type="text/css" href="/service/media/ext/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="portal.css" />
+	
+	<style type="text/css">
+		body { height: 100%; margin: 0px; padding: 0px }
+        ## Comment to hide map
+		map_canvas { height: 100% }
+        ##
+	</style>
+	
+	<script type="text/javascript" src="/service/media/ext/bootstrap.js"></script>
+	<script type="text/javascript" src="/service/media/scripts/markerclusterer.js"></script>
+	<script type="text/javascript" src="classes/PortalPanel.js"></script>
+	<script type="text/javascript" src="classes/PortalDropZone.js"></script>
+	<script type="text/javascript" src="classes/GridPortlet.js"></script>
+	<script type="text/javascript" src="classes/ChartPortlet.js"></script>
+	<script type="text/javascript" src="classes/Portlet.js"></script>
+	<script type="text/javascript" src="classes/PortalColumn.js"></script>
+	<script type="text/javascript" src="portal.js"></script>
+	<script type="text/javascript" src="json2.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	
+	<script type="text/javascript">
+
+	Ext.Loader.setPath('Ext.app', 'classes');
+
+	Ext.require([
+		'Ext.layout.container.*',
+		'Ext.resizer.Splitter',
+		'Ext.fx.target.Element',
+		'Ext.fx.target.Component',
+		'Ext.window.Window',
+		'Ext.app.Portlet',
+		'Ext.app.PortalColumn',
+		'Ext.app.PortalPanel',
+		'Ext.app.Portlet',
+		'Ext.app.PortalDropZone',
+		'Ext.app.GridPortlet',
+		'Ext.app.ChartPortlet'
+	]);
+	
+	Ext.onReady(function() {
+
+	// Create the portal
+	Ext.create('Ext.app.Portal');
+
+	// Global Variables
+	var latlng = [];
+	var markerArray = [];
+	var clusterVisits = Ext.data.StoreManager.lookup('clusterVisits');
+	var epsilon = 0.2;
+	var minpts = 10;
+	var map;
+	var messages;
+	var chartType = 'screen_events'; 	// Default to screen events chart
+	var sdate = '';
+	var edate = '';
+
+        var monthRange = ['Jan', 'Feb', 'Mar', 'Apr', 
+            'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
+            'Nov', 'Dec'];
+
+	var divArray = [	'portlet_screen',
+				'portlet_apps',
+				'portlet_battery',
+				'portlet_power',
+				'portlet_volt',
+				'portlet_curr',
+				'portlet_temp',
+				'portlet_bytes',
+				'portlet_wifiscan',
+				'portlet_packets',
+				'portlet_netstate',
+				'portlet_cellsignal',
+				//'portlet_netapps',
+				'portlet_cpu',
+				'portlet_memory',
+				'portlet_gps',
+				'portlet_audio',
+				'portlet_accel',
+				'portlet_appresource'
+	];
+	
+	var containerArray = [	'container_screen',
+				'container_apps',
+				'container_battery',
+				'container_power',
+				'container_volt',
+				'container_curr',
+				'container_temp',
+				'container_bytes',
+				'container_wifiscan',
+				'container_packets',
+				'container_netstate',
+				'container_cellsignal',
+				//'container_netapps',
+				'container_cpu',
+				'container_memory',
+				'container_gps',
+				'container_audio',
+				'container_accel',
+				'container_appresource'
+	];
+	
+	var chartTypes = [	'screen_events',
+				'apps',
+				'battery_level',
+				'power',
+				'battery_volt',
+				'battery_current',
+				'battery_temp',
+				'net_bytes',
+				'wifi_scan',
+				'net_packets',
+				'net_state',
+                'cell_signal',
+				//'net_app',
+				'cpu_usage',
+				'mem_usage',
+                'gps',
+                'audio',
+                'accelservice',
+				'appresource'
+	];
+    	
+	var appresource_index = -1;	// The index of the 'appresource' value in the chartTypes array. Set dynamically.
+	var yesterday = new Date();
+    	var tomorrow = new Date();
+    	yesterday.setDate(yesterday.getDate()-1);
+    	tomorrow.setDate(tomorrow.getDate()+1);
+	yesterday.setSeconds(0);
+	yesterday.setHours(0);
+	yesterday.setMinutes(0);
+	tomorrow.setSeconds(0);
+	tomorrow.setHours(0);
+	tomorrow.setMinutes(0);
+	this.chartLoadEnabled = 1;
+
+	// Initialize IMG elements in DOM
+	var imgArray = [];
+
+	for (var i = 0; i < divArray.length; i++) {
+		imgArray.push(document.createElement("img"));
+		imgArray[i].id = chartTypes[i];
+		Ext.getCmp(containerArray[i]).setLoading(true);
+		imgArray[i].src = '/service/media/ext/welcome/css/blank.gif';
+		document.getElementById(divArray[i]).appendChild(imgArray[i]);
+	}
+
+	// Bootstrap the Dashboard	
+	this.initializeDashboard = function (startDate, endDate) {
+
+		// Summer Intern Temp
+		Ext.getCmp('filterPanel').setLoading(true);
+	
+		// Asynchronously retrieve the JSON-ified location data from server	
+		Ext.Ajax.request({
+			url: 'http://128.97.93.158/service/viz/?json',
+			method: 'POST',
+			timeout: 3000000,
+			params: {
+				syear: startDate.getFullYear(),
+				smonth: monthRange[startDate.getMonth()],
+				sday: startDate.getDate(),
+				shour: startDate.getHours(),
+				sminute: startDate.getMinutes(),
+				eyear: endDate.getFullYear(),
+				emonth: monthRange[endDate.getMonth()],
+				eday: endDate.getDate(),
+				ehour: endDate.getHours(),
+				eminute: endDate.getMinutes()	
+			},
+			failure: function(response) {
+				Ext.Msg.show({
+					title: 'Error',
+					msg: 'Failed to retrieve location data from database.',
+					buttons: Ext.Msg.OK,
+				});
+			},
+			success: function(response) {
+				var messages = eval(response.responseText);
+		
+				// Clear the loading mask	
+				// Summer Intern temp
+				Ext.getCmp('filterPanel').setLoading(false);
+		
+				// Clear the dashboard global variables	
+				latlng = [];
+				if (markerArray) {
+					for (i in markerArray) {
+						markerArray[i].setMap(null);
+					}
+					markerArray.length = 0;
+				}
+				map = undefined;
+				
+				// TODO: Clear the cluster details field
+				
+				// Summer Intern
+				var combo = Ext.getCmp('choose_visit');
+				combo.clearValue();
+				//Ext.getCmp('address1').setRawValue('');
+				//Ext.getCmp('address2').setRawValue('');
+				Ext.getCmp('start_date').setRawValue('');
+				Ext.getCmp('end_date').setRawValue('');
+				Ext.getCmp('duration').setRawValue('');
+
+				
+				// Run the dashboard
+				runDashboard(messages,epsilon,minpts);
+	
+				// Initialize the chart images in the DOM
+				var smonths = (startDate.getMonth() < 9) ? '0' + (startDate.getMonth()+1) : startDate.getMonth()+1;        
+                                var sdays = (startDate.getDate() < 10) ? '0' + startDate.getDate() : startDate.getDate();
+                                var shours = (startDate.getHours() < 10) ? '0' + startDate.getHours() : startDate.getHours();
+                                var sminutes = (startDate.getMinutes() < 10) ? '0' + startDate.getMinutes() : startDate.getMinutes();       
+                                var sstring = '' + startDate.getFullYear() + 
+                                                smonths + sdays + shours + sminutes;                                            
+				sdate = sstring;
+        
+                                var emonths = (endDate.getMonth() < 9) ? '0' + (endDate.getMonth()+1) : endDate.getMonth()+1;        
+				var edays = (endDate.getDate() < 10) ? '0' + endDate.getDate() : endDate.getDate();
+                                var ehours = (endDate.getHours() < 10) ? '0' + endDate.getHours() : endDate.getHours();
+                                var eminutes = (endDate.getMinutes() < 10) ? '0' + endDate.getMinutes() : endDate.getMinutes();       
+                                var estring = '' + endDate.getFullYear() + 
+                                                emonths + edays + ehours + eminutes;
+
+				edate = estring;
+
+				// 9-26-11 : Prevent refreshing of charts if chartLoadEnabled is set to false (for parsing the data)
+				if (this.chartLoadEnabled) {
+					for (var i = 0; i < divArray.length; i++) {
+						
+						imgArray[i].onload = function (num) {
+							return function () {	
+								// Expand the portlet if it was previously collapsed	
+							//	Ext.getCmp(containerArray[num]).expand(true);
+	
+								// Remove the loading mask
+								Ext.getCmp(containerArray[num]).setLoading(false);
+							};
+						}(i);
+	
+						imgArray[i].onerror = function (num) {
+							return function() {
+								//imgArray[num].src = '/service/media/ext/welcome/css/blank.gif';
+								Ext.getCmp(containerArray[num]).setLoading(false);
+								Ext.getCmp(containerArray[num]).setLoading('Not Enough Data To Draw Chart.');
+							};
+						}(i);
+					
+						Ext.getCmp(containerArray[i]).setLoading(true);
+	
+						if (divArray[i] == 'portlet_appresource') {
+							appresource_index = i;
+							var newsrc = '/service/media/ext/welcome/css/blank.gif'; 
+							Ext.getCmp(containerArray[i]).setLoading(false);
+							
+							Ext.getCmp('choose_application').setRawValue('');
+							Ext.getCmp('appresource_cpu').setDisabled(true);
+							Ext.getCmp('appresource_memory').setDisabled(true);
+							Ext.getCmp('appresource_network').setDisabled(true);
+						} else {
+							var newsrc = 'http://128.97.93.158/service/viz/'+
+										chartTypes[i]+'/'+sstring+'/'+estring+'/';
+						}
+						if (document.getElementById(chartTypes[i]).src == newsrc) {
+							Ext.getCmp(containerArray[i]).setLoading(false);
+						} else {
+							document.getElementById(chartTypes[i]).src = newsrc;
+						}	
+					}
+				}
+			}
+		});
+	};
+
+	// Initialize the dashboard upon initial loading of the page. Default date between yesterday and tomorrow.
+	this.initializeDashboard(yesterday,tomorrow);
+
+	function runDashboard(messages, epsilon, minpts) {
+		for (var i=0; i < messages.length; i++) {
+			
+			var currentLat = messages[i].data.Lat;
+			var currentLon = messages[i].data.Lon;
+
+			if (messages[i].data.Accuracy > "100") {				
+				// Filter out innacurate data points
+				messages.splice(i,1);	// Remove the data point, for ease of processing later on
+				i--; // Make sure the correct next point is evaluated	
+			} else {				
+				latlng.push(new google.maps.LatLng(currentLat,currentLon));
+			}
+		}
+		
+		// Populate the Marker array
+		for (var i=0; i < messages.length; i++) {
+		
+	    		markerArray.push(new google.maps.Marker({
+						position: latlng[i],
+						title: "Date: "+messages[i].date,
+						animation: google.maps.Animation.DROP
+					}));
+
+		}
+
+		// Center the map over all of the points
+		var bounds = new google.maps.LatLngBounds();
+
+		for (var i = 0; i < latlng.length; i++) {
+			bounds.extend(latlng[i]);
+		}
+	
+		// Divide LatLng's into clusters
+		var myOptions = {
+      			zoom: 15,
+      			//center: bounds.getCenter(),
+			center: latlng[0],
+			//maxZoom: 13,
+      			mapTypeId: google.maps.MapTypeId.ROADMAP
+    		};
+
+		// Summer Intern
+    		//map = new google.maps.Map(Ext.getCmp('map_panel').body.dom, myOptions);
+    	var mydiv = document.createElement('div');
+		map = new google.maps.Map(mydiv, myOptions);
+
+		map.fitBounds(bounds);
+
+		var selectCluster = function (index) {
+			//console.log("Cluster " + index + " selected");	
+			clusterVisits.clearFilter();
+			clusterVisits.filter('clusterid',index);
+
+			// Summer Intern
+			var combo = Ext.getCmp('choose_visit');
+			combo.clearValue();
+			combo.setRawValue(combo.store.first().get('sdate').toLocaleString());
+			combo.setRawValue(combo.store.first().get('stringid'));
+			selectVisitInCluster(combo.getPicker(),[combo.store.first()]);
+		}
+
+		var addVisitToCluster = function (sdate, edate, clusterid) {
+			var clusterVisits = Ext.data.StoreManager.lookup('clusterVisits');
+
+			clusterVisits.filter('clusterid',clusterid);
+			var visitnum = clusterVisits.getCount()+1;
+			clusterVisits.add({ clusterid: clusterid, visitid: visitnum, stringid: 'Cluster '+clusterid+' - Visit #'+ visitnum, sdate: sdate, edate: edate });
+			clusterVisits.clearFilter();
+		}
+
+
+		var markerClusterer = new MarkerClusterer(map, markerArray, {
+						'zoomOnClick': false
+						//,'maxZoom': 13
+					}, messages, addVisitToCluster, selectCluster);
+
+		this.markerClusterer = markerClusterer;
+		
+	}
+
+		var selectApplication = function (picker, record) {
+			var selection = record[0];
+			console.log(selection.get('appname'));
+
+			Ext.getCmp('appresource_cpu').setDisabled(false);
+			Ext.getCmp('appresource_memory').setDisabled(false);
+			Ext.getCmp('appresource_network').setDisabled(false);
+			
+			Ext.getCmp('appresource_cpu').toggle(false,true);
+			Ext.getCmp('appresource_cpu').toggle(true);
+			//Ext.getCmp('appresource_memory')
+			//Ext.getCmp('appresource_network')
+
+		}
+		// Update the ExtJS chart to show information for selected cluster
+		var selectVisitInCluster = function (picker, record) {
+				var selection = record[0];
+			
+				var cluster_sdate = selection.get('sdate');
+				var cluster_edate = selection.get('edate');
+				var cluster_id = selection.get('clusterid');
+					
+				var smonths = (cluster_sdate.getMonth() < 9) ? '0' + (cluster_sdate.getMonth()+1) : cluster_sdate.getMonth()+1;	
+				var sdays = (cluster_sdate.getDate() < 10) ? '0' + cluster_sdate.getDate() : cluster_sdate.getDate();
+				var shours = (cluster_sdate.getHours() < 10) ? '0' + cluster_sdate.getHours() : cluster_sdate.getHours();
+				var sminutes = (cluster_sdate.getMinutes() < 10) ? '0' + cluster_sdate.getMinutes() : cluster_sdate.getMinutes();	
+				var sstring = '' + cluster_sdate.getFullYear() + 
+						smonths + sdays + shours + sminutes;						
+
+	
+				var emonths = (cluster_edate.getMonth() < 9) ? '0' + (cluster_edate.getMonth()+1) : cluster_edate.getMonth()+1;	
+				var edays = (cluster_edate.getDate() < 10) ? '0' + cluster_edate.getDate() : cluster_edate.getDate();
+				var ehours = (cluster_edate.getHours() < 10) ? '0' + cluster_edate.getHours() : cluster_edate.getHours();
+				var eminutes = (cluster_edate.getMinutes() < 10) ? '0' + cluster_edate.getMinutes() : cluster_edate.getMinutes();	
+				var estring = '' + cluster_edate.getFullYear() + 
+						emonths + edays + ehours + eminutes;						
+
+				sdate = sstring;
+				edate = estring;	
+	
+				// Retrieve the approximate address of cluster/visit
+				var geocoder = new google.maps.Geocoder();
+				geocoder.geocode({
+					'latLng': markerClusterer.clusters_[cluster_id].markers_[0].getPosition()
+				}, function (results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						var test = results[0].formatted_address.indexOf(',');
+						Ext.getCmp('address1').setValue(results[0].formatted_address.substr(0,test));
+						Ext.getCmp('address2').setValue(results[0].formatted_address.substr(test+2));
+					}
+				});
+
+				// Calculate the duration of the visit, and round off to two decimal places
+				var duration = Math.round(((cluster_edate-cluster_sdate)/3600000)*100)/100;
+					
+				// Set the "Visit Details" field values		
+				Ext.getCmp('start_date').setValue(cluster_sdate.toLocaleString().slice(0,cluster_sdate.toLocaleString().lastIndexOf(':')));
+				Ext.getCmp('end_date').setValue(cluster_edate.toLocaleString().slice(0,cluster_edate.toLocaleString().lastIndexOf(':')));
+				Ext.getCmp('duration').setValue(duration + ' hours');
+
+					for (var i = 0; i < divArray.length; i++) {
+						if (divArray[i] != 'portlet_appresource') {
+							Ext.getCmp(containerArray[i]).setLoading(true);
+							var newsrc = 'http://128.97.93.158/service/viz/'+chartTypes[i]+'/'+sdate+'/'+edate+'/';
+							if (document.getElementById(chartTypes[i]).src == newsrc) {
+								Ext.getCmp(containerArray[i]).setLoading(false);
+							} else {
+								document.getElementById(chartTypes[i]).src = newsrc;
+							}	
+						} else {
+							Ext.getCmp('choose_application').setRawValue('');
+							imgArray[appresource_index].src = '/service/media/ext/welcome/css/blank.gif';
+							Ext.getCmp('appresource_cpu').setDisabled(true);
+							Ext.getCmp('appresource_memory').setDisabled(true);
+							Ext.getCmp('appresource_network').setDisabled(true);
+	
+						}
+					}
+		}
+
+		// Summer Intern
+		Ext.getCmp('choose_visit').on('select', selectVisitInCluster);
+
+		// Application Resources listener definitions
+		Ext.getCmp('choose_application').on('select', selectApplication);
+		Ext.getCmp('appresource_cpu').addListener('toggle', function (button, pressed) {
+			// Un-toggle all other buttons
+			this.toggle(true, true);
+			Ext.getCmp('appresource_network').toggle(false, true);
+			Ext.getCmp('appresource_memory').toggle(false, true);
+			
+			// Load the correct image in the chart
+			var newsrc = "http://128.97.93.158/service/viz/app_cpu/"+sdate+"/" + edate + "/" + Ext.getCmp('choose_application').getValue() + "/"; 
+
+
+			if (imgArray[appresource_index].src != newsrc) {	
+				Ext.getCmp('container_appresource').setLoading(true);
+				imgArray[appresource_index].src = newsrc;
+			}	
+
+		});
+		
+		Ext.getCmp('appresource_network').addListener('toggle', function (button, pressed) {
+			// Un-toggle all other buttons
+			this.toggle(true, true);
+			Ext.getCmp('appresource_cpu').toggle(false, true);
+			Ext.getCmp('appresource_memory').toggle(false, true);
+			
+			// Load the correct image in the chart
+			var newsrc = "http://128.97.93.158/service/viz/app_net/"+sdate+"/" + edate + "/" + Ext.getCmp('choose_application').getValue() + "/"; 
+
+			if (imgArray[appresource_index].src != newsrc) {	
+				Ext.getCmp('container_appresource').setLoading(true);
+				imgArray[appresource_index].src = newsrc;
+			}	
+
+		});
+	
+		Ext.getCmp('appresource_memory').addListener('toggle', function (button, pressed) {
+			// Un-toggle all other buttons
+			this.toggle(true, true);
+			Ext.getCmp('appresource_network').toggle(false, true);
+			Ext.getCmp('appresource_cpu').toggle(false, true);
+			
+			// Load the correct image in the chart
+			var newsrc = "http://128.97.93.158/service/viz/app_mem/"+sdate+"/" + edate + "/" + Ext.getCmp('choose_application').getValue() + "/"; 
+
+			if (imgArray[appresource_index].src != newsrc) {	
+				Ext.getCmp('container_appresource').setLoading(true);
+				imgArray[appresource_index].src = newsrc;
+			}	
+
+		});
+
+		Ext.getCmp('collapse_all').addListener('toggle', function(button, pressed) {
+			if (pressed) {
+				for (var i = 0; i < containerArray.length; i++) {
+					Ext.getCmp(containerArray[i]).collapse(Ext.Component.DIRECTION_TOP, true);
+				}
+			} else {
+				for (var i = 0; i < containerArray.length; i++) {
+					Ext.getCmp(containerArray[i]).expand(true);
+				}
+			}
+		});
+		
+		Ext.getCmp('go_button').addListener('click', function() {
+						var startdate = Ext.getCmp('startDate').getValue();
+						var starttime = Ext.getCmp('startTime').getValue();
+						var enddate = Ext.getCmp('endDate').getValue();
+						var endtime = Ext.getCmp('endTime').getValue();
+	
+						startdate.setHours(starttime.getHours());
+						startdate.setMinutes(starttime.getMinutes());
+						enddate.setHours(endtime.getHours());
+						enddate.setMinutes(endtime.getMinutes());					
+						if (enddate <= startdate) {	
+							Ext.Msg.show({
+								title: 'Date Range Error',
+								msg: 'Please enter a valid date and time range.',
+								buttons: Ext.Msg.OK,
+							});
+						} else {
+							initializeDashboard(startdate,enddate);				
+						}
+					});
+
+
+  		});
+	
+	</script>
+</head>
+<body>
+	<span id="app-msg" style="display:none;"></span>
+</body>
+</html>
+
+

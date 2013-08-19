@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>FusionCharts v3 Documentation</title>
+<link rel="stylesheet" href="../css/Style.css" type="text/css" />
+<script type="text/javascript" src="../assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="../assets/prettify/prettify.css" />
+<script type="text/javascript" src="../assets/ui/js/jquery-1.4.2.min.js" ></script>
+<script type="text/javascript" src="../assets/ui/js/lib.js" ></script>		</head>
+	<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+<tr>
+		<td class="pageHeader">Using FusionCharts Tag</td>     
+  </tr>
+    <tr>
+    <td class="text">
+       <p>FusionCharts provides an alternative HTML tag based embedding method to create charts into a web page. Using this method, you can embed charts  without writing <a href="FirstChart.html">JavaScript code </a>or HTML <span class="codeInline"><a href="HtmlEmbed.html">&lt;OBJECT&gt;</a></span><a href="HtmlEmbed.html">/&lt;EMBED&gt;</a> tags.&nbsp; Using this method all you need to is to use <span class="codeInline">&lt;fusioncharts&gt;</span>  tag. You can set all chart configurations and data through this tag. </p>
+       <p>To implement FusionCharts in this way, you must also include the  JavaScript class <span class="codeInline">FusionChartsDOM.js</span> (present in <span class="codeInline">Charts</span> folder) apart from the standard JavaScript class  file <span class="codeInline">FusionCharts.js</span>. Following code snippet demonstrates the use of <span class="codeInline">&lt;fusioncharts&gt;</span>  tag:</p>
+    </td>
+    </tr>
+    <tr>
+    <td class="text">
+       <pre class="code_container prettyprint lang-html">&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My First chart using FusionCharts - 
+           creating chart using fusioncharts tag&lt;/title&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;FusionCharts/FusionCharts.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;FusionCharts/FusionChartsDOM.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    <strong>&lt;fusioncharts chartType=&quot;Column3D&quot; dataUrl=&quot;Data.xml&quot; width=&quot;400&quot; height=&quot;300&quot;&gt;
+    &lt;/fusioncharts&gt; </strong>
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+       </td>
+    </tr>
+    
+    <tr>
+       <td class="text">
+          <p>This method is implemented using a separate framework - FusionCharts DOM. Some features of FusionCharts DOM are:</p>
+          <ul>
+             <li>Easy HTML-like chart Inclusion - FusionCharts DOM facilitates the writing of simple HTML-like &lt;fusioncharts&gt; tag instead of complex JavaScript or Object/Embed tags. Yes it is that simple! </li>
+             <li>Inline XML Data Embedding - With FusionCharts DOM, your XML data can be directly provided inside your web pages. </li>
+             <li>Default Chart Parameters Specification - Provide a common set of look-and-feel for all your charts in a document by setting default chart parameters for all your charts. </li>
+          </ul>
+       </td>
+    </tr>
+    
+    <tr>
+    <td class="text">
+       <p Class="highlightBlock"> For complete technical information on using <span class="codeInline">&lt;fusioncharts&gt;</span> tag refer to <a href="http://www.fusioncharts.com/DOM/docs/Contents/index.html">FusionCharts  DOM  documentation</a>. Visit FusionCharts DOM online demos from <a href="http://www.fusioncharts.com/DOM/demo.asp" target="_blank">here</a>.   </p>
+    </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>FusionCharts v3 Documentation</title>
+<link rel="stylesheet" href="../css/Style.css" type="text/css" />
+<script type="text/javascript" src="../assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="../assets/prettify/prettify.css" />
+<script type="text/javascript" src="../assets/ui/js/jquery-1.4.2.min.js" ></script>
+<script type="text/javascript" src="../assets/ui/js/lib.js" ></script>
+</head>
+
+<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+  <tr> 
+    <td class="pageHeader">FusionCharts ASP Class API &gt; Creating Stacked Chart </td>
+  </tr>
+  
+  <tr>
+    <td valign="top" class="text">
+      <p>FusionCharts v3 offers Stacked Chart &ndash; a type of  Multi-series chart where multiple datasets are stacked one above the other. Have a look at the the image below to have an idea  how a Stacked Chart looks like:</p>
+    
+    <img src="../Images/ClassImages/ClassStacked.jpg" class="imageBorder" />
+    <p class="highlightBlock" >Before you go further with this page, we recommend you to please see  the previous pages <a href="FirstChart.html">Creating First Chart</a> &amp; <a href="MultiSeriesChart.html">Creating Multi-series chart</a>  as we start off from concepts explained in   that page. </p>
+    <p>The process of generating Stacked chart is same as  Multi-series chart. The only difference is here we need to specify a different  chart type. Open and modify the mulit-series chart you have created in the previous page like this:</p></td>
+  </tr>
+  <tr>
+    <td valign="top"><pre class="prettyprint code_container">&lt;%@LANGUAGE=&quot;VBSCRIPT&quot;%&gt;
+ &lt;%
+    <span class="codeComment">'Include FusionCharts ASP Class</span>
+ %&gt; 
+&lt;!--#include file=&quot;../Class/FusionCharts_Gen.asp&quot;--&gt;
+&lt;%&nbsp;&nbsp;&nbsp;
+dim FC
+<span class="codeComment">&nbsp;&nbsp;&nbsp; 'Create FusionCharts ASP class object</span>&nbsp;&nbsp;&nbsp;
+set FC = new FusionCharts
+<span class="codeComment">&nbsp;&nbsp;&nbsp; 'Set chart type to <strong>Stacked Column2D chart</strong></span>&nbsp;&nbsp;&nbsp;
+Call FC.setChartType(&quot;<strong>StackedColumn3D</strong>&quot;)
+...      </pre>
+    </td>
+  </tr>
+  <tr>
+     <td valign="top" class="text"><p>As you can see, while creating the chart object, we have only changed the chart type to <span class="codeInline">stackedColumn3D</span> </p>
+       <pre class="prettyprint code_container">FC = new FusionCharts
+Call FC.setChartType(&quot;<strong>StackedColumn3D</strong>&quot;)</pre>
+         <br />
+         </span>This is the trick. You can see that, instead of a multiseries chart, we render a stacked chart. </p>
+    <p class="highlightBlock">Please go through <a href="Functions.html">FusionCharts ASP Class API Reference</a> section to know more about the functions used in the above code. </p>
+    <p class="text">Here comes the output:</p> 
+    <img src="../Images/ClassImages/ClassStacked.jpg" class="imageBorder" /></td>
+  </tr>
+</table>
+</body>
+</html>

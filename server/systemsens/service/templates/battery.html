@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %} Battery details {% endblock %}
+
+{% block content %}
+
+{% if isQuerySet %}
+
+<table border="0" width="100%">
+<tbody>
+   <tr>
+       <td width = "50%">
+               <font size="4" color="#0000ff">
+                     <a
+                         href="http://128.97.93.158/service/viz/">Main</a> |
+                     <a href="#level">Level</a> |
+                     <a href="#rate">Battery Discharge</a> |
+                     <a href="#voltage">Voltage</a> | 
+                     <a href="#current">Current</a> |
+                     <a href="#temperature">Temperature</a> 
+                     </font></b>
+              </td>
+   </tr>
+</tbody>
+</table>
+
+
+
+
+<br>
+<br>
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+	   <td><font size="4"><strong><a name="level">Level</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img
+src="http://128.97.93.158/service/viz/battery_level/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+	   <td><font size="4"><strong><a name="rate">Battery Discharge</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img
+src="http://128.97.93.158/service/viz/battery_power/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a name="voltage">Voltage</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/battery_volt/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a name="current">Current</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/battery_current/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a
+                      name="temperature">Temperature</a></strong></font>,
+      </td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/battery_temp/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-8859-1"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>FusionCharts v3 Documentation</title>
+<link rel="stylesheet" href="../../../css/Style.css" type="text/css" />
+<script type="text/javascript" src="../../../assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../assets/prettify/prettify.css" />
+<script type="text/javascript" src="../../../assets/ui/js/jquery-1.4.2.min.js" ></script>
+<script type="text/javascript" src="../../../assets/ui/js/lib.js" ></script>
+</head>
+
+<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+  <tr> 
+    <td class="pageHeader">Pie/Doughnut Chart - JavaScript API </td>
+  </tr>
+  
+  <tr> 
+    <td valign="top" class="text"><p>Pie 3D, Pie 2D, Doughnut 3D and Doughnut 2D charts expose a special function for better interactivity. Shown below is a table which contains detailed description of the function:</p> </td>
+  </tr>
+  <tr>
+    <td valign="top" class="text"><table width="100%" border="0" cellpadding="2" cellspacing="0" class="table">
+      <tr>
+        <td width="20%" class="header">Function Name</td>
+        <td width="15%" class="header">Parameter </td>
+        <td width="65%" class="header">Description</td>
+      </tr>
+      <tr>
+        <td width="20%" valign="top" class="codeInline"><a name="togglepieslice" id="togglepieslice"></a>togglePieSlice()</td>
+        <td width="15%" valign="top" class="text">id : Number </td>
+        <td width="65%" class="text">
+          Toggles the slicing state of a pie/doughnut segment. The function takes a id as integer (taking base as 0 i.e., the first segment's index is 0) . As per the id provided to the function, the pie segment status is checked. If the segment is already sliced-out it moves inside. If the pie segment is not yet sliced, it slices out. Hence, this is what is called toggling of pie segment's slice mode.          </td>
+      </tr>
+      
+    </table>    
+    </td>
+  </tr>
+  <tr>
+    <td height="25"></td>
+  </tr>
+  <tr>
+    <td valign="top" class="header">
+      Usage Example:</td>
+  </tr>
+  <tr>
+    <td valign="top" class="text"><p>Given below is are examples of how to use the function using JavaScript.</p>
+    <p class="textBold">togglePieSlice()</p></td>
+  </tr>
+  <tr>
+    <td valign="top" class="text"><!--&lt;&lt;TODO&gt;&gt; samples #1 simple sample which toggles the first slice #sample which toggles a slice having a link #sample which slice out the highest value slice --></td>
+  </tr>
+  
+  <tr>
+    <td valign="top" class="text">
+       <pre class="code_container prettyprint">&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Pie/Doughnut slicing API&lt;/title&gt; 
+    &lt;script type=&quot;text/javascript&quot; SRC=&quot;../../../Charts/FusionCharts.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+      function slicePie()
+      {
+        // get the index of the slice to toggle
+        slice = document.getElementById('index').value ;
+        // toggle the slice
+        FusionCharts(&quot;myChartId&quot;).togglePieSlice(slice);
+      }
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+
+    &lt;div id=&quot;chartContainer&quot;&gt;FusionCharts&lt;/div&gt;
+    &lt;script language=&quot;JavaScript&quot;&gt;
+
+      var myChart = new FusionCharts(&quot;../../../Charts/Pie3D.swf&quot;, &quot;myChartId&quot;, &quot;400&quot;, &quot;300&quot;, &quot;0&quot;, &quot;1&quot;); 
+      myChart.setXMLUrl(&quot;Data.xml&quot;);
+      myChart.render(&quot;chartContainer&quot;);
+
+    &lt;/script&gt;
+
+    &lt;input type=&quot;text&quot; id=&quot;index&quot; size=&quot;5&quot; value=&quot;0&quot;/&gt;
+    &lt;input type=&quot;button&quot; value=&quot;Toggle&quot; onclick=&quot;<strong>slicePie</strong>()&quot;/&gt;
+
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+       <p>In the above code, we have created a Pie 3D chart with four slices. We have created a text input button to take pie slice index value as input. When a number is provided in the input box and Toggle button is clicked, <span class="codeInline">togglePieSlice</span> function is called. The slice id is passed to the function. In effect, the desired slice slices-out or slices-in. </p>
+       <p>See it <a href="../../../../Code/JavaScript/PieDoughnut/togglePieSlice.html" target="_blank">live</a>!</p>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

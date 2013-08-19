@@ -1,0 +1,1596 @@
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponseBadRequest
+from visualization.models import SystemSens, comments
+from django.template import Context, loader
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+
+import time, calendar, simplejson, datetime
+
+
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib.patches import Circle
+import struct
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import matplotlib.mlab as mlab
+import matplotlib.cbook as cbook
+import matplotlib.cm as cm
+import pylab
+import numpy
+
+
+hours    = mdates.HourLocator()   # every hour 
+days   = mdates.DayLocator()  # every day
+hoursFmt = mdates.DateFormatter('%H')
+daysFmt = mdates.DateFormatter('%m-%d  .')
+
+
+ONE_SECOND = 1000.0
+ONE_MINUTE = 60 * ONE_SECOND
+ONE_HOUR = 60 * ONE_MINUTE
+
+
+cpucolors = {
+        '0.0'   : (0, 0, 0), # Black 0-0-0
+        '99.73' :  (0.88, 1, 1), # Light Cyan 224-255-255
+        '99.4' :  (0.88, 1, 1), # Light Cyan 224-255-255
+        '162.54': (0.88, 1, 1), # Light Cyan 224-255-255
+        '199.47':  (0.88, 1, 1), # Light Cyan 224-255-255
+        '199.8':  (0.88, 1, 1), # Light Cyan 224-255-255
+        '254.77': (0.68, 0.85, 0.90), # Light blue 173-216-230
+        '245.36': (0.68, 0.85, 0.90), # Light blue 173-216-230
+        '280.24': (0.68, 0.85, 0.90), # Light blue 173-216-230
+        '299.95': (0.68, 0.85, 0.90), # Light blue 173-216-230
+        '305.72': (0.40, 0.80, 0.69), # Medium Aquamarine 102-205-170
+        '331.2' : (0.56, 0.73, 0.56), # Dark sea green 143-188-143
+        '356.67' : (0.56, 0.73, 0.56), # Dark sea green 143-188-143
+        '382.15': (0.60, 0.80, 0.19), # Yellow green 154-205-50
+        '383.38': (0.60, 0.80, 0.19), # Yellow green 154-205-50
+        '398.95': (0.60, 0.80, 0.19), # Yellow green 154-205-50
+        '398.6': (0.60, 0.80, 0.19), # Yellow green 154-205-50
+        '407.63': (0.64, 0.71, 0.12),  # I don't know
+        '433.11': (0.74, 0.71, 0.42),  # Dark khaki 189-183-107
+        '458.58': (1, 0.63, 0.37), # Sandy brown 244-164-96
+        '484.06': (1, 0.63, 0.37), # Sandy brown 244-164-96
+        '535.01': (1, 0.58, 0), # Dark orange 255-140-0
+        '560.49': (1, 0.39, 0.28), # Tomato 255-99-71 
+        '509.54': (1, 1, 0), # Yellow 255-255-0
+        '585.97': (1, 1, 0), # Yellow 255-255-0
+        '598.9': (1, 1, 0), # Yellow 255-255-0
+        '611.45': (1, 1, 0), # Yellow 255-255-0
+        '636.92' : (1, 0, 0),  # Red 255-0-0
+        '662.4' : (1, 0, 0),  # Red 255-0-0
+        '797.9' : (0.65, 0.16, 0.16), # Brown 165-42-42
+        '796.2' : (0.65, 0.16, 0.16), # Brown 165-42-42
+        '798.87' : (0.65, 0.16, 0.16), # Brown 165-42-42
+        '997.37' : (0, 0, 0), # Black 0-0-0
+        '996' : (0, 0, 0), # Black 0-0-0
+        '998.84' : (0, 0, 0) # Black 0-0-0
+        }
+
+
+class User_Query:
+    def __init__(self, start, end):
+        self.startdate = start
+        self.enddate = end
+ 
+
+    def set_date(start, end):
+        self.startdate = start
+        self.enddate = end
+ 
+
+
+def _query(imei, fdate, tdate, rtype='any'):
+    q = SystemSens.objects.filter(imei__exact=imei)
+    q = q.filter(dt_record__gte=fdate)
+    q = q.filter(dt_record__lte=tdate)
+    if rtype != "any":
+        q = q.filter(data_type__exact=rtype)
+    q = q.order_by('dt_record')
+    return q
+
+
+
+
+def _date(in_date):
+
+    if len(in_date) == 8:
+        y_str = in_date[:4]
+        m_str = in_date[4:6]
+        d_str = in_date[-2:]
+        return "%s-%s-%s" %(y_str, m_str, d_str)
+    else:
+        y_str = in_date[:4]
+        m_str = in_date[4:6]
+        d_str = in_date[6:8]
+        h_str = in_date[8:10]
+        mi_str = in_date[10:12]
+
+        return "%s-%s-%s %s:%s:00" %(y_str, m_str, d_str, h_str, mi_str)
+
+
+
+def correct_date(in_date):
+    if len(in_date) > 10:
+        res = datetime.datetime.strptime(in_date, '%Y-%m-%d %H:%M:%S')
+        #res = datetime.datetime(t.year, t.month, t.day, t.hour, t.minute, t.second)
+    else:
+        res = datetime.datetime.strptime(in_date, '%Y-%m-%d')
+        #res = datetime.datetime(t.year, t.month, t.day)
+
+
+    return res
+
+def time_datetime(t):
+    res = datetime.datetime(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour,
+            t.tm_min, t.tm_sec)
+    return res
+
+
+
+
+#@login_required
+#def screen_time(request, imei, fdate, tdate):
+#    response = HttpResponse(mimetype='image/png')
+#
+#    from_date = _date(fdate)
+#    to_date = _date(tdate)
+#    q = _query(imei, from_date, to_date, 'screen')
+#
+#    plotvals = []
+#    plotkeys = []
+#    plotmap = {}
+#
+#    stime = 0
+#
+#    for e in q.all().order_by('dt_record'):
+#        record = simplejson.loads(e.message)
+#        data = record["data"]
+#        if data["status"] == "ON":
+#            plotkeys.append(record["date"])
+#
+#    return HttpResponse("Found " + str(len(plotkeys))  + " records"
+#            + " Start date: " + from_date
+#            + " End date: " + to_date
+#            + str(plotkeys));
+#
+#
+
+
+
+@login_required
+def screen_time(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'screen')
+
+    plotvals = []
+    plotkeys = []
+    plotmap = {}
+
+    stime = 0
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        if data["status"] == "ON":
+            stime = int(record["time_stamp"])
+
+        if data["status"] == "OFF":
+            etime = int(record["time_stamp"])
+            slen = (etime - stime)/(1000)
+            if slen < 1000:
+                d = record["date"]
+                t = datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S')
+                t_idx = "%s-%s-%s %s:30:30" %(t.year, t.month + 1, t.day, t.hour)
+                if t_idx not in plotmap.keys():
+                    plotmap[t_idx] = slen
+                else:
+                    plotmap[t_idx] += slen
+
+
+    for k in plotmap.keys():
+        plotkeys.append(datetime.datetime.strptime(k, '%Y-%m-%d %H:%M:%S'))
+
+    plotkeys.sort()
+
+
+
+    for t in plotkeys:
+        t_idx = "%s-%s-%s %s:30:30" %(t.year, t.month, t.day, t.hour)
+        plotvals.append(plotmap[t_idx])
+
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, plotvals, lw=2, ms=10, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Length of Interactions (minutes)")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+@login_required
+def screen_events(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'screen')
+
+    plotvals = []
+    plotkeys = []
+    plotmap = {}
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        if data["status"] == "ON":
+            #d = record["date"]
+            #t = datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S')
+            t = e.dt_record
+            t_idx = "%s-%s-%s %s:30:30" %(t.year, t.month, t.day, t.hour)
+            if t_idx not in plotmap.keys():
+                plotmap[t_idx] = 1
+            else:
+                plotmap[t_idx] += 1
+
+
+    for k in plotmap.keys():
+        plotkeys.append(datetime.datetime.strptime(k, '%Y-%m-%d %H:%M:%S'))
+
+    plotkeys.sort()
+
+    for t in plotkeys:
+        t_idx = "%s-%s-%s %s:30:30" %(t.year, t.month, t.day, t.hour)
+        plotvals.append(plotmap[t_idx])
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+    ax.plot_date(plotkeys, plotvals, lw=2, ms=10, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Number of Interactions")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+@login_required
+def battery_level(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'battery')
+
+
+
+    #return HttpResponse(str(_date(tdate)))
+
+    plotvals = []
+    plotkeys = []
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        plotkeys.append(e.dt_record)
+        plotvals.append(data["level"])
+
+
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, plotvals, lw=2, ms=4)#, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+    ax.xaxis.labelpad = 1
+    #ax.xtick.major.pad = 5
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+    ax.set_ylim(0, 105)
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Battery Level %")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+@login_required
+def battery_temp(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'battery')
+
+    plotvals = []
+    plotkeys = []
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+
+        plotkeys.append(e.dt_record)
+        plotvals.append(data["temperture"])
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, plotvals, lw=2, ms=4)#, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Battery Temperature (C)")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+@login_required
+def battery_volt(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'battery')
+
+    plotvals = []
+    plotkeys = []
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        plotkeys.append(e.dt_record)
+        plotvals.append(data["voltage"])
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, plotvals, lw=2, ms=4)#, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Battery Voltage (mV)")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+@login_required
+def accelservice(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+    myres = HttpResponse()
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'AccelService')
+
+
+    accell = []
+    plotkeys = []
+
+    paccel = 0
+
+    firstTime = True
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        ts = record["time_stamp"]
+        if (data.has_key("Accel")):
+            accel = data["Accel"]
+
+
+            if not firstTime:
+                ts_diff = ts - pts
+                plotkeys.append(correct_date(record["date"]))
+                if ts_diff < 10 * ONE_MINUTE:
+                    accell.append((accel - paccel)/2.0)
+                else:
+                    accell[len(accell) - 1] = 0.0
+                    accell.append(0.0)
+                
+            paccel = accel
+            pts = ts
+
+            firstTime = False
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, accell, 'b-', lw=2, ms=4,)
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+    maxy = max(accell)*1.5
+    #ax.set_ylim(0, 600)
+    ax.set_ylim(0, maxy)
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Samples per Minute")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    ax.legend(['Accelerometer'])
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+@login_required
+def wifigps(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+    myres = HttpResponse()
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'WiFiGPSLocation')
+
+
+    gpsl = []
+    wifil = []
+    plotkeys = []
+
+    pgps = pwifi = 0
+
+    firstTime = True
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        ts = record["time_stamp"]
+        if (data.has_key("GPS")):
+            gps = data["GPS"]
+            wifi = data["WiFiScan"]
+
+
+            if not firstTime:
+                ts_diff = ts - pts
+                plotkeys.append(correct_date(record["date"]))
+                if ts_diff < 10 * ONE_MINUTE:
+                    gpsl.append((gps - pgps)/2.0)
+                    wifil.append((wifi - pwifi)/2.0)
+                else:
+                    gpsl[len(gpsl) - 1] = 0.0
+                    gpsl.append((gps - pgps)/2.0)
+                    
+                    wifil[len(wifil) - 1] = 0.0
+                    wifil.append((wifi - pwifi)/2.0)
+ 
+            pgps = gps
+            pwifi = wifi
+            pts = ts
+
+            firstTime = False
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, gpsl, 'b-', lw=2, ms=4,)
+    ax.plot_date(plotkeys, wifil, 'r-', lw=2, ms=4,)
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+    maxy = max(max(gpsl), max(wifil))*1.5
+    ax.set_ylim(0, maxy)
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Units per Minute")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    ax.legend(['GPS', 'WiFiScan'])
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+@login_required
+def net_packets(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'netiflog')
+
+
+    cellrxl = []
+    celltxl = []
+    wifirxl = []
+    wifitxl = []
+    plotkeys = []
+
+    firstTime = True
+
+    pcellrx = pcelltx = pwifirx = pwifitx = 0
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        ts = record["time_stamp"]
+        if (data.has_key("MobileRxPackets")):
+            cellrx = data["MobileRxPackets"]
+            celltx = data["MobileTxPackets"]
+            wifirx = data["TotalRxPackets"] - cellrx
+            wifitx = data["TotalTxPackets"] - celltx
+
+            crx = (cellrx - pcellrx)
+            ctx = (celltx - pcelltx)
+            wrx = (wifirx - pwifirx)
+            wtx = (wifitx - pwifitx)
+
+            if not firstTime:
+                ts_diff = ts - pts
+                plotkeys.append(e.dt_record)
+                if ts_diff < 10 * ONE_MINUTE:
+                    cellrxl.append(crx)
+                    celltxl.append(ctx)
+                    wifirxl.append(wrx)
+                    wifitxl.append(wtx)
+                else:
+                    cellrxl[len(cellrxl) - 1] = 0.0
+                    cellrxl.append(0)
+
+                    celltxl[len(celltxl) - 1] = 0.0
+                    celltxl.append(0)
+
+                    wifirxl[len(wifirxl) - 1] = 0.0
+                    wifirxl.append(0)
+
+                    wifitxl[len(wifitxl) - 1] = 0.0
+                    wifitxl.append(0)
+
+
+            pcellrx = cellrx
+            pcelltx = celltx
+            pwifirx = wifirx
+            pwifitx = wifitx
+            pts = ts
+            firstTime = False
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+    maxy = max(max(celltxl), max(cellrxl), max(wifirxl), max(wifitxl))*1.5
+    #maxy = 1500
+
+
+    ax.plot_date(plotkeys, celltxl, 'b-', lw=2, ms=4,)
+    ax.plot_date(plotkeys, cellrxl, 'r-', lw=2, ms=4,)
+    ax.plot_date(plotkeys, wifitxl, 'g-', lw=2, ms=4,)
+    ax.plot_date(plotkeys, wifirxl, 'y-', lw=2, ms=4,)
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+    ax.set_ylim(0, maxy)
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("# Packets")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    ax.legend(['Cell Tx', 'Cell Rx', 'WiFi Tx', 'WiFi Rx'])
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+
+@login_required
+def net_bytes(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'netiflog')
+
+#    if q.count() == 0:
+#        return HttpResponseRedirect( reverse('visualization.views.netdev_bytes', args=(imei, fdate, tdate)))
+#
+
+
+    cellrxl = []
+    celltxl = []
+    wifirxl = []
+    wifitxl = []
+    plotkeys = []
+
+    pcellrx = pcelltx = pwifirx = pwifitx = 0
+
+    firstTime = True
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        ts = record["time_stamp"]
+        if (data.has_key("MobileRxBytes")):
+            cellrx = data["MobileRxBytes"]
+            celltx = data["MobileTxBytes"]
+            wifirx = data["TotalRxBytes"] - cellrx
+            wifitx = data["TotalTxBytes"] - celltx
+
+            crx = (cellrx - pcellrx)/1024
+            ctx = (celltx - pcelltx)/1024
+            wrx = (wifirx - pwifirx)/1024
+            wtx = (wifitx - pwifitx)/1024
+
+
+            if not firstTime:
+                time_delta = ts - pts
+                plotkeys.append(e.dt_record)
+                if time_delta < 10*ONE_MINUTE:
+                    cellrxl.append(crx)
+                    celltxl.append(ctx)
+                    wifirxl.append(wrx)
+                    wifitxl.append(wtx)
+                else:
+                    cellrxl[len(cellrxl) - 1] = 0.0
+                    cellrxl.append(0)
+
+                    celltxl[len(celltxl) - 1] = 0.0
+                    celltxl.append(0)
+
+                    wifirxl[len(wifirxl) - 1] = 0.0
+                    wifirxl.append(0)
+
+                    wifitxl[len(wifitxl) - 1] = 0.0
+                    wifitxl.append(0)
+
+
+
+            pcellrx = cellrx
+            pcelltx = celltx
+            pwifirx = wifirx
+            pwifitx = wifitx
+
+            firstTime = False
+            pts = ts
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+    maxy = max(max(celltxl), max(cellrxl), max(wifirxl), max(wifitxl))*1.5
+    #maxy = 1500
+
+
+    ax.plot_date(plotkeys, celltxl, 'b-', lw=2, ms=4,)
+    ax.plot_date(plotkeys, cellrxl, 'r-', lw=2, ms=4,)
+    ax.plot_date(plotkeys, wifitxl, 'g-', lw=2, ms=4,)
+    ax.plot_date(plotkeys, wifirxl, 'y-', lw=2, ms=4,)
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+    ax.set_ylim(0, maxy)
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("KB")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    ax.legend(['Cell Tx', 'Cell Rx', 'WiFi Tx', 'WiFi Rx'])
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+@login_required
+def net_app(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'netlog')
+
+
+
+    first = simplejson.loads(q.all()[0].message)['data']
+    last = simplejson.loads(q.all()[q.count() - 1].message)['data']
+
+
+
+
+    rxVal = {}
+    txVal = {}
+
+    for app in last.keys():
+        if first.has_key(app):
+            lastRec = last[app]
+            firstRec = first[app]
+            rxVal[app] = (lastRec['Rx'] - firstRec['Rx'])/1024
+            txVal[app] = (lastRec['Tx'] - firstRec['Tx'])/1024
+
+    appList = list()
+    txList = list()
+    rxList = list()
+
+
+    for app in sorted(txVal, key=txVal.get, reverse=True):
+        rxList.append(rxVal[app])
+        txList.append(txVal[app])
+        appName = app.split('.')[-1]
+        appList.append(appName)
+
+
+    ind = numpy.arange(len(appList))
+    width = 0.45
+
+
+
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.bar(ind, txList, width, color='r')
+    #ax.bar(ind + width, rxList, width, color='y')
+
+
+    ax.xaxis.set_ticks(ind+width)
+    ax.xaxis.set_ticklabels(appList)
+    ax.set_xlabel("Application")
+    fig.autofmt_xdate(bottom=0.35, rotation=90)
+
+
+    ax.set_ylim(0, 1.2*max(txList))
+    ax.set_ylabel("Transmission (KB)")
+
+
+    #fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+@login_required
+def netstate(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'dataconnection')
+
+
+    keyMap = {}
+    valMap = {}
+
+    connectedkeys = []
+    disconnectedkeys = []
+    connected = []
+    disconnected = []
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        network = data['network']
+        state = data['state']
+        if state == 'connected':
+            value = 1.5
+        if state == 'disconnected':
+            value = 0.5
+
+        if keyMap.has_key(network):
+            keyMap[network].append(correct_date(record["date"]))
+            valMap[network].append(value)
+        else:
+            keyMap[network] = [correct_date(record["date"])]
+            valMap[network] = [value]
+ 
+
+
+      
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+    colors = ['b', 'r', 'g', 'y', 'c']
+    circles = []
+
+    count = 0
+    for key in keyMap.keys():
+        ax.plot_date(keyMap[key], valMap[key], ms=4, color=colors[count]) 
+        circles.append(Circle((0, 0), 0, fc=colors[count]))
+        count += 1
+
+#    ax.plot_date(disconnectedkeys, disconnected, lw=0, ms=3, color='red', alpha=0.7) 
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    pos = [0.5, 1.5]
+    stateList = ['Disconnected', 'Connected']
+    ax.yaxis.set_ticks(pos)
+    ax.yaxis.set_ticklabels(stateList)
+
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+    ax.set_ylim(0, 2)
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    #ax.set_ylabel("state")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+    ax.legend(circles, keyMap.keys())
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+
+@login_required
+def wifi_scan(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'wifiscan')
+
+
+    plotvals = []
+    plotkeys = []
+    wifiset = {}
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        for wifi in data.keys():
+            if wifiset.has_key(wifi):
+                wifiset[wifi] += 1
+            else:
+                wifiset[wifi] = 1
+    
+    wifimap = {}
+    for i, v in enumerate(sorted(wifiset)):
+        wifimap[v] = i
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        #t = correct_date(record["date"])
+        t = e.dt_record
+        for wifi in data.keys():
+            plotkeys.append(t)
+            plotvals.append(wifimap[wifi])
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, plotvals, lw=0, ms=3, color='blue', alpha=0.7) 
+    #, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("WiFi APs ID")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+def matches(key, l):
+
+    for i in l:
+        if key.find(i) != -1:
+            return True
+
+    return False
+
+@login_required
+def apps(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'activitylog')
+
+    from_date =  correct_date(from_date)
+    to_date =  correct_date(to_date)
+
+
+    starttime = {}
+    stoptime = {}
+    y = {}
+    laststart = {}
+    inApp = {}
+    appId = {}
+    idCounter = 1
+
+
+    myres = HttpResponse( q.count())
+
+
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        #t = correct_date(record["date"])
+
+        if len(data.keys()) < 1:
+            continue
+
+        for key in data.keys():
+            ts = int(key)/1000000000
+            t = time_datetime(time.localtime(ts))
+            if (t < from_date) or (t > to_date):
+                continue
+
+            ev = data[key].get("Event")
+            app = data[key].get("Activity").split('/')[0]
+
+            #myres.write("<br> " + app + ": " + str(ts) + "-" + str(t) )
+
+            if not starttime.has_key(app):
+                starttime[app] = list()
+                stoptime[app] = list()
+                appId[app] = idCounter;
+                idCounter += 1
+
+            if matches(ev, ['resume', 'start', 'create']):
+                starttime[app].append(t)
+
+            if matches(ev, ['pause', 'stop', 'destroy']):
+                stoptime[app].append(t)
+
+    for app in appId.keys():
+        myres.write("<br>::::"+  app
+                + "-->" + str(starttime[app])
+                )
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    for app in appId.keys():
+        startlist = list()
+        stoplist = list()
+
+        startlist.extend(starttime[app])
+        stoplist.extend(stoptime[app])
+        startlist.sort()
+        stoplist.sort()
+        
+        minlen = min(len(startlist), len(stoplist))
+
+        if minlen > 0:
+            y = list()
+            for i in range(0, minlen):
+                y.append(appId[app])
+            
+            #ax.hlines(y, startlist[0:minlen], stoplist[0:minlen], lw=4)
+
+            ax.plot_date(startlist[0:minlen], y, lw=2, ms=4)#, alpha=0.7, mfc='orange')
+            ax.plot_date(stoplist[0:minlen], y, lw=2, ms=4)#, alpha=0.7, mfc='orange')
+
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(from_date, to_date)
+    #ax.set_xlim(min(datelist), max(datelist))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    pos = list()
+    appList = list()
+    for app in sorted(appId):
+        appName = app.split('.')[-1]
+        pos.append(appId[app])
+        appList.append(appName)
+
+
+    ax.yaxis.set_ticks(pos)
+    ax.yaxis.set_ticklabels(appList)
+    ax.set_ylabel("Application")
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+@login_required
+def calls(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'call')
+
+
+    outgoingstart = []
+    outgoingend = []
+    y = []
+    inCall = False
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        t = correct_date(record["date"])
+
+        if data["state"] == 'started':
+            inCall = True
+            laststart = t
+
+        if data["state"] == 'ended' and inCall:
+            outgoingstart.append(laststart)
+            outgoingend.append(t)
+            y.append(1)
+
+
+
+    myres = HttpResponse()
+    myres.write("xmin" + str(len(outgoingstart)))
+    myres.write("xmax" + str(len(outgoingend)))
+
+    #return myres
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    #ax.hlines(y, outgoingstart, outgoingend, lw=4)
+    #ax.plot_date(plotkeys, plotvals, lw=2, ms=4)#, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Call")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+@login_required
+def mem_usage(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'meminfo')
+
+
+    plotvals = []
+    plotkeys = []
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        if (data.has_key("MemTotal:")):
+            plotkeys.append(e.dt_record)
+            plotvals.append(int(data["MemTotal:"]) - int(data["MemFree:"]))
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    ax.plot_date(plotkeys, plotvals, lw=2, ms=4)#, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("Memory Usage")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+
+
+@login_required
+def cpu_usage(request, imei, fdate, tdate):
+    response = HttpResponse(mimetype='image/png')
+
+    from_date = _date(fdate)
+    to_date = _date(tdate)
+    q = _query(imei, from_date, to_date, 'cpu')
+
+    plotvals = {}
+    plotkeys = {}
+
+    for e in q.all():
+        record = simplejson.loads(e.message)
+        data = record["data"]
+        if (data.has_key("cpu")):
+            #t = correct_date(record["date"])
+            t = e.dt_record
+            if data["cpu"].has_key("freq"):
+                freq = str(data["cpu"].get("freq"))
+            else:
+                freq = '0.0'
+
+            if plotkeys.has_key(freq):
+                plotkeys[freq].append(t)
+                plotvals[freq].append(data["cpu"].get("total"))
+            else:
+                plotkeys[freq] = [t]
+                plotvals[freq] =  [data["cpu"].get("total")]
+
+
+
+
+
+    fig = Figure(figsize=(12,4), dpi=100, facecolor='white')
+    canvas = FigureCanvas(fig)
+    ax = fig.add_subplot(111)
+
+
+    for freq in plotkeys.keys():
+        ax.plot_date(plotkeys[freq], plotvals[freq], lw=2, ms=4,
+                color=cpucolors[str(freq)])
+        #mfc=cpucolor[freq])#, alpha=0.7, mfc='orange')
+
+
+    ax.xaxis.set_major_locator(days)
+    ax.xaxis.set_major_formatter(daysFmt)
+    ax.xaxis.set_minor_locator(hours)
+    ax.xaxis.set_minor_formatter(hoursFmt)
+
+
+    ax.set_xlim(correct_date(from_date), correct_date(to_date))
+    ax.set_ylim(0, 110)
+
+    ax.format_xdata = mdates.DateFormatter("%Y-%m-%d")
+    ax.set_ylabel("CPU %")
+    ax.set_xlabel("Time (hour)")
+    ax.grid(True)
+    ax.grid(True, which='minor')
+
+
+    fig.autofmt_xdate(bottom=0.25, rotation=90)
+
+
+    canvas.print_png(response)
+
+    return response
+
+
+
+   
+
+@login_required
+def index(request, detail):
+
+    now = datetime.datetime.now()
+    difference1 = datetime.timedelta(days=1)
+    difference2 = datetime.timedelta(days=-1)
+    nextday = now + difference1;
+    prevday = now + difference2;
+    imei_ = request.user.email
+
+    if detail == 'battery':
+        t = loader.get_template('battery.html')
+    elif detail == 'interaction':
+        t = loader.get_template('interaction.html')
+    elif detail == 'network':
+        t = loader.get_template('network.html')
+    else:
+        t = loader.get_template('main.html')
+
+    c = Context({
+        'year_range': ['2010', '2011'],
+        'day_range': ["%(#)02d" %{"#":i} for i in range(1, 31)],
+        'hour_range': ["%(#)02d" %{"#":i} for i in range(0, 24)],
+        'minute_range': ["%(#)02d" %{"#":i} for i in range(0, 60)],
+        'month_range' : ['Jan', 'Feb', 'Mar', 'Apr', 
+            'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
+            'Nov', 'Dec'],
+        'imei' : imei_,
+        'user' : request.user.username
+        })
+
+
+    try:
+        syear = request.POST['syear']
+        eyear = request.POST['eyear']
+        smonth = request.POST['smonth']
+        emonth = request.POST['emonth']
+        sday = request.POST['sday']
+        eday = request.POST['eday']
+        #if len(detail) > 1:
+        shour = request.POST['shour']
+        ehour = request.POST['ehour']
+        sminute = request.POST['sminute']
+        eminute = request.POST['eminute']
+    except (KeyError):
+        syear = str(now.year)
+        eyear = str(nextday.year)
+        emonth = datetime.datetime.strftime(nextday, "%b")
+        eday = "%(#)02d" %{"#": nextday.day}
+        if len(detail) > 1:
+            sday = "%(#)02d" %{"#": now.day}
+            smonth = datetime.datetime.strftime(now, "%b")
+        else:
+            sday = "%(#)02d" %{"#": prevday.day}
+            smonth = datetime.datetime.strftime(prevday, "%b")
+
+        shour = ehour = sminute = eminute = '00'
+
+
+    months = {'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 
+        'May':'05', 'Jun':'06', 'Jul':'07', 'Aug':'08', 'Sep':'09', 
+        'Oct':'10', 'Nov':'11', 'Dec':'12'}
+
+    sdate = syear + months[smonth] + sday + shour + sminute
+    edate = eyear + months[emonth] + eday + ehour + eminute
+   
+
+    from_date = syear + "-" + months[smonth] + "-" + sday
+    to_date = eyear + "-" + months[emonth] + "-" + eday
+
+
+
+    user_query = User_Query(sdate, edate)
+    c.update({'isQuerySet': True, 
+        'user_query': user_query,
+        'cur_sday' : sday,
+        'cur_eday' : eday,
+        'cur_smonth' : smonth,
+        'cur_emonth' : emonth,
+        'cur_syear' : syear,
+        'cur_eyear' : eyear,
+        'cur_shour' : shour,
+        'cur_ehour' : ehour,
+        'cur_sminute' : sminute,
+        'cur_eminute' : eminute,
+        'count': _query(imei_, from_date, to_date).count(),})
+
+    
+    return HttpResponse(t.render(c))
+
+
+def put(request):
+
+    mydebug = open("/tmp/mydebug.txt", "a")
+    #mydebug.write("New set \n")
+
+    one_month = datetime.timedelta(days=30)
+
+    try:
+        data = request.POST['data']
+    except (KeyError):
+        mydebug.write("Bad request\n")
+        raise HttpResponseBadRequest()
+
+
+    try:
+        lines = simplejson.loads(data)
+    except (ValueError):
+        mydebug.write("Bad data\n")
+        mydebug.write(data)
+        return HttpResponseBadRequest()
+
+
+
+    counter = 0
+
+    for line in lines:
+        if line.has_key("date"):
+            counter += 1
+            try:
+                dt_record_ = line["date"]
+                data_type_ = line["type"]
+                imei_ = line["user"]
+                message_ = simplejson.dumps(line)
+                r = SystemSens(imei=imei_, dt_record=dt_record_, data_type = data_type_)
+                r.message = message_
+                r.save()
+                #mydebug.write(str(counter) + ": " + dt_record_ + "\n")
+            except Exception as ex:
+                pass
+                mydebug.write("Error handling " + str(counter) + "\n")
+                mydebug.write(str(ex) + "\n")
+                #mydebug.write(str(line) + "\n")
+
+
+
+    mydebug.close()
+
+    return HttpResponse("Inserted " + str(counter) + " records")
+
+
+
+
+
+@login_required
+def comment(request, imei, fdate, tdate):
+
+    try:
+        data = request.POST['comment']
+    except (KeyError):
+        raise Http400
+
+    now = datetime.datetime.now();
+    submit_date_ = "%s-%s-%s %s:%s:%s" %(now.year, now.month, now.day, now.hour, now.minute, now.second)
+
+    newcomment = comments()
+    newcomment.imei = imei
+    newcomment.submit_date = submit_date_
+    newcomment.from_date = fdate
+    newcomment.to_date = tdate
+    newcomment.text = data
+
+    newcomment.save()
+
+
+    #return HttpResponseRedirect(reverse('visualization.views.index'))
+    return HttpResponseRedirect("http://systemsens.cens.ucla.edu/service/viz/")
+
+
+
+@login_required
+def parse(request, imei, fdate, tdate):
+

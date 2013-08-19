@@ -1,0 +1,299 @@
+<DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>CENS SystemSens</title>
+</head>
+
+<body style="background-color: rgb(255, 255, 255);" link="#0000ff"  vlink="#0000ff">
+
+
+
+<table border="0" cellpadding="3"  width="100%">
+    <tr>
+        <td width="90%">
+        </td>
+        <td>
+        <font size="4"> <a href="http://128.97.93.158/service/viz/logout/">logout</a>
+            {{user}}/
+            <font size="1">
+            {{user_query.imei}}
+            </font>
+        </td>
+
+    </tr>
+</table>
+<table bgcolor="#eeeeee" border="0" cellpadding="3"  width="100%">
+<tbody>
+   <tr>
+      <td  valign="top"  align="center">
+          <p>
+          <font size="6"><b>NESL SystemSens</font>
+              
+              <font size="5">  {% block title %} {% endblock %} </font></b>
+          </p>
+      </td>
+
+      <td  valign="top"  align="center">
+          <form
+              method="post"
+              name = "queryForm">
+          <table border="0" cellspacing="0" >
+              <tr>
+                  <td> </td>
+                  <td>Hour</td>
+                  <td>Minute</td>
+                  <td>Month</td>
+                  <td>Day</td>
+                  <td>Year</td>
+
+
+              </tr>
+              <tr>
+                  <td>Start</td>
+                  <td align=left > 
+                      <select name=shour value=''>
+                            {% for i in hour_range %}
+                            {% ifequal i cur_shour  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select><b>:</b>
+                    </td>
+                  <td align=left > 
+                      <select name=sminute value=''>
+                            {% for i in minute_range %}
+                            {% ifequal i cur_sminute  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                  <td align=left > 
+                      <select name=smonth value=''>
+                            {% for i in month_range %}
+                            {% ifequal i cur_smonth  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td align=left > 
+                        <select name=sday value=''>
+                            {% for i in day_range %}
+                            {% ifequal i cur_sday  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+                  <td align=left > 
+                        <select name=syear >
+                            {% for i in year_range %}
+                            {% ifequal i cur_syear  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+            </tr>
+            <tr>
+                  <td>End</td>
+                  <td align=left > 
+                      <select name=ehour value=''>
+                            {% for i in hour_range %}
+                            {% ifequal i cur_ehour  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select><b>:</b>
+                    </td>
+                  <td align=left > 
+                      <select name=eminute value=''>
+                            {% for i in minute_range %}
+                            {% ifequal i cur_eminute  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                  <td align=left > 
+                      <select name=emonth value=''>
+                            {% for i in month_range %}
+                            {% ifequal i cur_emonth  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td align=left > 
+                        <select name=eday >
+                            {% for i in day_range %}
+                            {% ifequal i cur_eday  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                  </select>
+                  </td>
+                  <td align=left > 
+                        <select name=eyear >
+                            {% for i in year_range %}
+                            {% ifequal i cur_eyear  %}
+                            <option value="{{i}}" selected>{{i}}</option>
+                            {%else %}
+                            <option value="{{i}}" >{{i}}</option>
+                            {% endifequal %}
+                            {% endfor %}
+                        </select>
+                  </td>
+
+            </tr>
+            
+            </table>
+            <table border="0" cellspacing="0" >
+            <tr>
+                <td>
+                    <input type=submit 
+                    value="Prev day" onClick="return prev()">
+                </td>
+
+                <td>
+                  <input type=submit value=Submit>
+                </td>
+
+
+                <td>
+                    <input type=submit 
+                    value="Next day" onClick="return next()">
+                </td>
+            </tr>
+            </table>
+  </form>
+     </td>
+   </tr>
+</tbody>
+</table>
+
+
+<div id="content"> 
+    {% block content %} {% endblock %} 
+</div>
+
+
+<script type="text/javascript" language="JavaScript">
+<!--
+
+function next()
+{
+    curDay = document.queryForm.eday.selectedIndex;
+    curMonth = document.queryForm.emonth.selectedIndex;
+    curYear = document.queryForm.eyear.selectedIndex;
+
+    nextDay = curDay + 1;
+
+    if (nextDay > 29 )
+    {
+        nextDay = 0;
+        nextMonth = curMonth + 1;
+    }
+    else
+    {
+        nextMonth = curMonth;
+    }
+
+    if (nextMonth > 11)
+    {
+        nextMonth = 0;
+        nextYear = curYear + 1;
+    }
+    else
+    {
+        nextYear = curYear;
+    }
+
+
+
+    document.queryForm.sday.selectedIndex = curDay;
+    document.queryForm.smonth.selectedIndex = curMonth;
+    document.queryForm.syear.selectedIndex = curYear;
+
+
+    document.queryForm.eday.selectedIndex = curDay + 1;
+    document.queryForm.emonth.selectedIndex = nextMonth;
+    document.queryForm.eyear.selectedIndex = nextYear;
+
+
+    return true;
+
+}
+
+
+function prev()
+{
+    curDay = document.queryForm.sday.selectedIndex;
+    curMonth = document.queryForm.smonth.selectedIndex;
+    curYear = document.queryForm.syear.selectedIndex;
+
+    nextDay = curDay - 1;
+
+    if (nextDay < 0 )
+    {
+        nextDay = 29;
+        nextMonth = curMonth - 1;
+    }
+    else
+    {
+        nextMonth = curMonth;
+    }
+
+    if (nextMonth < 0)
+    {
+        nextMonth = 11;
+        nextYear = curYear - 1;
+    }
+    else
+    {
+        nextYear = curYear;
+    }
+
+
+
+    document.queryForm.sday.selectedIndex = nextDay;
+    document.queryForm.smonth.selectedIndex = nextMonth;
+    document.queryForm.syear.selectedIndex = nextYear;
+
+
+    document.queryForm.eday.selectedIndex = curDay;
+    document.queryForm.emonth.selectedIndex = curMonth;
+    document.queryForm.eyear.selectedIndex = curYear;
+
+    return true;
+
+}
+
+-->
+
+</script>
+
+
+</body>
+</html>

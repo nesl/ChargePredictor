@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+
+{% block title %} Network traffic details {% endblock %}
+{% block content %}
+
+{% if isQuerySet %}
+
+<table border="0" width="100%">
+<tbody>
+   <tr>
+       <td width = "50%">
+               <font size="4" color="#0000ff">
+                     <a
+                         href="http://128.97.93.158/service/viz/">Main</a> |
+                     <a href="#bytes">Bytes</a> |
+                     <a href="#packets">Packets</a> |
+                     <a href="#netstate">Network State</a> |
+                     <a href="#applications">Applications</a> 
+                     </font></b>
+              </td>
+   </tr>
+</tbody>
+</table>
+
+
+
+
+<br>
+<br>
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+	   <td><font size="4"><strong><a name="screen">Bytes</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img
+src="http://128.97.93.158/service/viz/net_bytes/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a
+                      name="applications">Packets</a></strong></font>
+      </td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/net_packets/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a name="netstate">Network State</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/net_state/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+
+
+
+<table bgcolor="#e0e0e0" border="0" width="100%">
+<tbody>
+   <tr>
+      <td><font size="4"><strong><a name="calls">Applications</a></strong></font></td>
+   </tr>
+</tbody>
+</table>
+
+<p>
+<img 
+src="http://128.97.93.158/service/viz/net_app/{{user_query.startdate}}/{{user_query.enddate}}/"></img>
+</p>
+
+{% endif %}
+
+{% endblock %}

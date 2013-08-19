@@ -1,0 +1,133 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>FusionCharts v3 Documentation</title>
+<script type="text/javascript" src="../../Charts/FusionCharts.js" ></script>
+<link rel="stylesheet" href="../css/Style.css" type="text/css" />
+<script type="text/javascript" src="../assets/prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="../assets/prettify/prettify.css" />
+<script type="text/javascript" src="../assets/ui/js/jquery-1.4.2.min.js" ></script>
+<script type="text/javascript" src="../assets/ui/js/lib.js" ></script>
+
+<style type="text/css">
+	input { border:1px solid #C9B4C9 ; background-color:#FCF8FD; padding:5px;} 
+</style>
+
+</head>
+
+<body>
+<table width="98%" border="0" cellspacing="0" cellpadding="3" align="center">
+  <tr>
+    <td class="pageHeader">FusionCharts and Styles </td>
+  </tr>
+  
+  <tr> 
+    <td class="text"><p>FusionCharts v3 introduces <span class="codeInline">Styles</span> 
+        to help you apply font, effects and animations to various objects of the 
+        chart. <span class="codeInline">Styles </span>lends a simple mechanism 
+        using which you can easily control the visual layout of charts. </p>
+      <p>See chart below which is setup to live-demonstrate some of the basic features of Styles. It has bevelled column. In case you have missed the animation, you can again recheck the animation clicking on the button below saying - &quot;Click here to animate the chart above&quot;. </p>
+      <div id="chart1Div" style="margin:10px 0;width:400px; height:300px;">The chart is supposed to load here. If you are unable to see the chart here
+			
+		  and can see this message, please check <a href="../Debug/Basic.html">Basic Troubleshooting</a> page. </div>
+			<input type="button" value="Click here to animate the chart above" onClick="reloadChart();" style="margin:0 0 0 80px;" />
+        
+      <p class="text">To use <span class="codeInline">Styles</span>, all you 
+        need to do is:</p>      <ul>
+        <li>Define your own style attributes in the <span class="codeInline">XML/JSON</span> 
+          data document, and</li>
+        <li>Associate (i.e., apply) them with defined <span class="codeInline">Objects</span> 
+          of the chart.</li>
+      </ul>      <p class="text">Starting FusionCharts v3, each object on the chart has 
+        been assigned a unique name, for direct association with style definitions. 
+        For example, the background of the chart is termed as <span class="codeInline">BACKGROUND</span>. 
+        Similarly, the plot (columns, lines, areas etc.) on the chart is named 
+        as <span class="codeInline">DATAPLOT</span>. This enables you to associate 
+        each style to multiple chart objects or associate multiple chart objects 
+      to a particular style.</p>      
+      <p><span class="text">You can find the list of objects for each chart in 
+      individual </span><span class="codeInline">Chart XML Sheet</span>. </p>
+      <p class="header" style="padding:3px;"><a name="advantage"></a>Advantages of using Style</p>
+    </td>
+  </tr>
+  <tr> 
+    <td><ul>
+        <li>Better control over chart look &amp; feel.</li>
+        <li>You can precisely define custom animations and effects 
+          according to your own taste.</li>
+        <li>Your formatting (cosmetic) attributes are grouped together 
+          in one element in the<span class="codeInline"> XML/JSON</span> document, 
+          thereby separating data from visual formatting.</li>
+        <li>You can store the entire style definition in a central 
+          location in your application, so that all charts within application 
+          can utilize it.</li>
+        <li>Easy re-use of style definitions. Each style can be applied 
+          to multiple chart objects or vice versa.</li>
+      </ul></td>
+  </tr>
+  
+  <tr> 
+    <td><p class="header" style="padding:3px;"><a name="type"></a>Style Types</p>
+    <p>Before we delve into more details, let's briefly skim over 
+      the different style type options that are present in FusionCharts v3.</p>
+    </td>
+  </tr>
+  <tr> 
+    <td><table width="60%" class="table" border="0" cellpadding="4" cellspacing="0" >
+        <tr class="trVeryLightGrayBg">  
+          <td width="20%" valign="top" class="text" align="left"><strong><a href="Font.html">Font</a></strong></td>
+          <td width="68%" valign="top" class="text">The<span class="codeInline"> 
+            Font</span> style allows you to control text properties for all 
+              the text on the chart. Using this, you can set the font family, 
+              color, size, background color, border color, spacing etc. of individual 
+              text elements on the chart</td>
+        </tr>
+        <tr> 
+          <td valign="top" class="text" align="left"><strong><a href="Animation.html">Animation</a></strong></td>
+          <td valign="top" class="text"><span class="codeInline">Animation</span> 
+            style type allows you to define your custom animations for different 
+            elements of the chart. By default, FusionCharts animates the data 
+            plot (columns, lines, area etc.) only. However, you can define your 
+            custom animations for other chart objects (like captions, titles, 
+            values etc.) in the <span class="codeInline">XML/JSON.</span> Each chart 
+              object can have multiple animation properties (like x, y, xscale, 
+              yscale, alpha etc.) and each sequence can have its own duration</td>
+        </tr>
+        <tr class="trVeryLightGrayBg"> 
+          <td valign="top" class="text" align="left"><strong><a href="Shadow.html">Shadow</a></strong></td>
+          <td valign="top" class="text">To 
+              apply <span class="codeInline">shadow</span> effect to any object 
+              on the chart, use this style type with configurable properties</td>
+        </tr>
+        <tr> 
+          <td valign="top" align="left" class="text"><strong><a href="Glow.html">Glow</a></strong></td>
+          <td valign="top" class="text"><span class="codeInline">Glow</span> 
+            Style type lets you apply glow effects to objects on the chart.</td>
+        </tr>
+        <tr class="trVeryLightGrayBg"> 
+          <td valign="top" class="text" align="left"><strong><a href="Bevel.html">Bevel</a></strong></td>
+          <td valign="top" class="text">To 
+              apply<span class="codeInline"> bevel</span> effect for any of the 
+              chart objects, use this style type.</td>
+        </tr>
+        <tr> 
+          <td valign="top"  align="left" class="text"><strong><a href="Blur.html">Blur</a></strong></td>
+          <td valign="top" class="text"><span class="codeInline">Blur</span> 
+            Style type helps to create a blur effect for any object on the chart. 
+            The amount and distance of blur are configurable.</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<script type="text/javascript"><!--
+	function reloadChart()
+	{
+		var animChart = FusionCharts.render( { swfUrl : "../../Charts/Column2D.swf", dataSource : "Data/style.xml", dataFormat :  "xmlurl" , renderAt : "chart1Div" , id: "myChartId" } );
+	}
+	
+	window.onload = reloadChart();
+// --></script>
+</body>
+</html>
